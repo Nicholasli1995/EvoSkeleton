@@ -1,7 +1,7 @@
 # EvoSkeleton
 This is the project website containing relevant files for the CVPR 2020 paper "Cascaded Deep Monocular 3D Human Pose Estimation with Evolutionary Training Data". The usage and instructions are organized into several parts serving distinct purposes. Please visit the corresponding sub-page for details. 
 
-*Temporary Note: Due to COVID-19 some contributors were unable to get back to this project until late-June. Thus this repo is currently a Beta version and certain modules are still under cleaning. Major modification to the project architecture is likely.  More code comments will be added in a future update.* 
+*Temporary Note: Due to COVID-19 some contributors were unable to get back to this project until late-June. Thus this repo is currently a Beta version and certain modules are still under cleaning. Major modification to the project architecture is possible.  More comments and documentation will be added in a future update.* 
 
 ## Hierarchical Human Representation and Data Synthesis
 [This sub-page](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/HHR.md) gives instructions on how to use the 3D skeleton model and how the evolution algorithm can be used to discover novel data.
@@ -21,7 +21,7 @@ This is the project website containing relevant files for the CVPR 2020 paper "C
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/U3DPW.png"/>
 </p>
 
-## Interactive Annotation Tool (Not Available For Now)
+## Interactive Annotation Tool (Will Be Available Soon)
 [This sub-page](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/ANNOTATOR.md) provides usage of an annotator that can be used to label 2D and 3D skeleton for an input image. U3DPW was obtained created with this tool and this tool may help increasing the scale of 3D annotation for in-the-wild images.
 <p align="center">
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/tool.gif" width="531" height="291"/>
