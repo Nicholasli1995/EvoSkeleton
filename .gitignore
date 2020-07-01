@@ -1,0 +1,16 @@
+#/*
+**/__pycache__
+.spyproject/
+/libs/annotator/fitted
+data/
+resources/
+model/
+*.yml
+*.log
+*.ini
+*.bak
+*.pth
+*.csv
+*.pyc
+
+
