@@ -31,7 +31,7 @@ Here we use SMPLify to estimate coarse 3D skeleton. You need to set up a Python 
 pip install chumpy
 pip install opendr
 ```
-After setting up the environment, you need to download the SMPL model files here and organize your project files as follows:
+After setting up the environment, you need to download the SMPL model files [here](https://drive.google.com/drive/folders/12qJQP-h4E43FkgE74tybQUjeP_pnqAor?usp=sharing) and organize your project files as follows:
   ```
    ${EvoSkeleton}
    ├── libs
@@ -53,5 +53,9 @@ The fitting process can be shown during running and the file annotation.npy will
 <p align="center">
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/fitted.png"/>
 </p>
-### 3D Keypoints Interactive Viewing
-Users can run the 3D interactive tool to view the 3D keypoints result and adjust it to match with the image. The program is ran in Python 3, by running the command `python interactive.py -d DATASET_PATH` where DATASET_PATH is the path to the dataset folder. Users can select the limb to be adjusted and arrow keys to change the angle of said limb. (Todo: Update this section to be more comprehensive). Pressing `q` will save the adjusted keypoints in DATASET_PATH/processed.
+
+## 3D Skeleton Annotation 
+One can modify the 3D parameters for RGB images interactively by running ${EvoSkeleton}/tools/annotate_3d.py
+<p align="center">
+  <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/tool.gif"/>
+</p>
