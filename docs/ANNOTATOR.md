@@ -23,7 +23,24 @@ Press N to go to the next image.
 Press Z to save the annotation.
 Press C to erase all of the assigned keypoints from the image and start over.
 
-### SMPLify 3D Keypoints Fitting
+## Coarse 3D Keypoints Estimation
+Manually annotating 3D skeleton from scratch is time-consuming, thus we use a tool to obtain an initial 3D pose estimation given 2D annotation. Any method that outputs 3D pose inference given 2D key-points can be employed.
+
+Here we use SMPLify to estimate coarse 3D skeleton. You need to set up a Python 2.7 environment where a spec-list can be used as your reference if you use Anaconda. Then you need to install chumpy and opendr using pip:
+```bash
+pip install chumpy
+pip install opendr
+```
+After setting up the environment, you need to download the SMPL model files here and organize your project files as follows:
+  ```
+   ${EvoSkeleton}
+   ├── libs
+      ├── annotator
+          ├── smplify
+              ├── models
+                  ├── basicModel_neutral_lbs_10_207_0_v1.0.0.pkl 
+                  ├── gmm_08.pkl 
+   ```
 Make sure you have the images and annotations folder in the corresponding dataset folder. As it is compatible in Python 2, run the program in the Python 2 Anaconda environment `conda activate py2; python process.py -d DATASET_PATH`. The DATASET_PATH is the path to the dataset folder. The output results is written in DATASET_PATH/processed folder.
 
 ### 3D Keypoints Interactive Viewing
