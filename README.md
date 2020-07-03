@@ -21,7 +21,7 @@ This is the project website containing relevant files for the CVPR 2020 paper "C
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/U3DPW.png"/>
 </p>
 
-## Interactive Annotation Tool (Will Be Available Soon)
+## Interactive Annotation Tool
 [This sub-page](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/ANNOTATOR.md) provides usage of an annotator that can be used to label 2D and 3D skeleton for an input image. U3DPW was obtained created with this tool and this tool may help increasing the scale of 3D annotation for in-the-wild images.
 <p align="center">
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/tool.gif" width="531" height="291"/>
