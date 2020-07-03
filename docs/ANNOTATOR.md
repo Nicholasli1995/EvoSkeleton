@@ -49,6 +49,9 @@ python fit_3d.py -dataset_dir DATASET_PATH -model_dir MODEL_PATH
 ```
 DATASET_PATH is the path to the folder containing the annotated 2D key-point file "annotation.npy".
 MODEL_PATH is the path to the used SMPL model (for example, basicModel_neutral_lbs_10_207_0_v1.0.0.pkl). There are other available models depending on the gender of the subject.
-
+The fitting process can be shown during running and the file annotation.npy will be updated with 3D parameters.
+<p align="center">
+  <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/fitted.png"/>
+</p>
 ### 3D Keypoints Interactive Viewing
 Users can run the 3D interactive tool to view the 3D keypoints result and adjust it to match with the image. The program is ran in Python 3, by running the command `python interactive.py -d DATASET_PATH` where DATASET_PATH is the path to the dataset folder. Users can select the limb to be adjusted and arrow keys to change the angle of said limb. (Todo: Update this section to be more comprehensive). Pressing `q` will save the adjusted keypoints in DATASET_PATH/processed.
