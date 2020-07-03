@@ -10,10 +10,10 @@ python annotate_2d.py -d DATASET_PATH
 ```
 DATASET_PATH is the path to the folder containing images.
 <p align="center">
-  <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/annotator_2d.gif" width="531" height="291"/>
+  <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/annotator_2d.gif"/>
 </p>
+
 Users can annotate 2D Keypoints in the following order by clicking on the image:
-(TODO: add a snapshot of using the annotator for 2D and 3D annotation)
 1. Right Ankle
 2. Right Knee
 3. Right Hip
@@ -31,8 +31,12 @@ Users can annotate 2D Keypoints in the following order by clicking on the image:
 15. Spine
 16. Thorax
 17. Nose
-
-Press `c` to erase all of the assigned keypoints from the image and start over. If you are done annotating all the keypoints, press `q` to save the keypoints and move on to the next image.
+Other keyborad short-cuts are:
+Press Q to exit the tool.
+Press C to remove the annotation.
+Press N to go to the next image.
+Press Z to save the annotation.
+Press C to erase all of the assigned keypoints from the image and start over.
 
 ### SMPLify 3D Keypoints Fitting
 Make sure you have the images and annotations folder in the corresponding dataset folder. As it is compatible in Python 2, run the program in the Python 2 Anaconda environment `conda activate py2; python process.py -d DATASET_PATH`. The DATASET_PATH is the path to the dataset folder. The output results is written in DATASET_PATH/processed folder.
