@@ -2,6 +2,7 @@
 **/__pycache__
 .spyproject/
 /libs/annotator/fitted
+/libs/annotator/smplify/models
 data/
 resources/
 model/
