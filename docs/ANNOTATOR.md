@@ -40,8 +40,15 @@ After setting up the environment, you need to download the SMPL model files here
               ├── models
                   ├── basicModel_neutral_lbs_10_207_0_v1.0.0.pkl 
                   ├── gmm_08.pkl 
+      ├── fit_3d.py               
+                  
    ```
-Make sure you have the images and annotations folder in the corresponding dataset folder. As it is compatible in Python 2, run the program in the Python 2 Anaconda environment `conda activate py2; python process.py -d DATASET_PATH`. The DATASET_PATH is the path to the dataset folder. The output results is written in DATASET_PATH/processed folder.
+Then one can run fit_3d under ${EvoSkeleton}/libs/annotator/fit_3d.py to fit the SMPL model
+```bash
+python fit_3d.py -dataset_dir DATASET_PATH -model_dir MODEL_PATH
+```
+DATASET_PATH is the path to the folder containing the annotated 2D key-point file "annotation.npy".
+MODEL_PATH is the path to the used SMPL model (for example, basicModel_neutral_lbs_10_207_0_v1.0.0.pkl). There are other available models depending on the gender of the subject.
 
 ### 3D Keypoints Interactive Viewing
 Users can run the 3D interactive tool to view the 3D keypoints result and adjust it to match with the image. The program is ran in Python 3, by running the command `python interactive.py -d DATASET_PATH` where DATASET_PATH is the path to the dataset folder. Users can select the limb to be adjusted and arrow keys to change the angle of said limb. (Todo: Update this section to be more comprehensive). Pressing `q` will save the adjusted keypoints in DATASET_PATH/processed.
