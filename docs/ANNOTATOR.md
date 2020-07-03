@@ -54,7 +54,7 @@ The fitting process can be shown during running and the file annotation.npy will
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/fitted.png"/>
 </p>
 
-## 3D Skeleton Annotation 
+## 3D Skeleton Annotation (Under Cleaning)
 One can modify the 3D parameters for RGB images interactively by running ${EvoSkeleton}/tools/annotate_3d.py
 <p align="center">
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/tool.gif"/>
