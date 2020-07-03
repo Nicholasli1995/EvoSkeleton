@@ -1,7 +1,17 @@
-## Usage
-### 2D Keypoints Annotation
-Users can annotate 2D Keypoints of images by running `annotate_2d.py`. To use on the default LSD dataset, simply run `python annotate_2d.py`. To run on a custom dataset, run `python annotate_2d.py -d DATASET_PATH` where DATASET_PATH is the path to the dataset folder.
+The annotator is composed of three parts:
+1. 2D annotation: interactively annotate 2D key-points for RGB images
+2. 3D parameter fitting: obtain coarse 3D skeleton fitting results based on SMPLify.
+3. 3D annotation: interactively modify 3D parameters.
 
+## 2D Keypoints Annotation
+Users can annotate 2D Keypoints of images by running the script `annotate_2d.py` under ${EvoSkeleton}/tools. 
+```bash
+python annotate_2d.py -d DATASET_PATH
+```
+DATASET_PATH is the path to the folder containing images.
+<p align="center">
+  <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/annotator_2d.gif" width="531" height="291"/>
+</p>
 Users can annotate 2D Keypoints in the following order by clicking on the image:
 (TODO: add a snapshot of using the annotator for 2D and 3D annotation)
 1. Right Ankle
