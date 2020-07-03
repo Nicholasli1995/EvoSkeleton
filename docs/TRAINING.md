@@ -1,12 +1,16 @@
 ## Data Preparation
 Similar to other repositories ([SimpleBaseline](https://github.com/una-dinosauria/3d-pose-baseline), [TemporalConvolution](https://github.com/facebookresearch/VideoPose3D)) on training 2D-to-3D  networks, we provide pre-processed 2D detections, camera parameters and 3D poses for training. The 2D detections are produced by our modified high-resolution model, while the camera parameters and the 3D poses are taken from [SimpleBaseline](https://github.com/una-dinosauria/3d-pose-baseline).
 
-The training data need to downloaded from [here](https://drive.google.com/drive/folders/1zyW8ryGXLq4bumWnVGUROpDNdubWUExg?usp=sharing) and placed under "${EvoSkeleton}/data" folder:
+The training data need to downloaded from [here](https://drive.google.com/drive/folders/1zyW8ryGXLq4bumWnVGUROpDNdubWUExg?usp=sharing) and placed under "${EvoSkeleton}/data" folder. Your directory should look like this:
    ```
    ${EvoSkeleton}
    ├── data
       ├── human3.6M
-          ├── your downloaded files
+          ├── cameras.npy (Camera parameters provided by Human 3.6M)
+          ├── threeDPose_train.npy (3D skeletons from Human 3.6M training split)
+          ├── threeDPose_test.npy (3D skeletons from Human 3.6M test split)
+          ├── twoDPose_HRN_train.npy (2D key-point detections obtained from the heatmap regression model for the training split)
+          ├── twoDPose_HRN_test.npy (2D key-point detections obtained from the heatmap regression model for the test split)
    ```
    
 ## Weakly-Supervised Experiments on Human 3.6M Dataset
