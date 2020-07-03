@@ -15,7 +15,7 @@ DATASET_PATH is the path to the folder containing images.
 
 Users can annotate 2D Keypoints in the following order by clicking on the image:
 1. Right Ankle 2. Right Knee 3. Right Hip 4. Left Hip 5. Left Knee 6. Left Ankle 7. Right Wrist 8. Right Elbow 9. Right Shoulder 
-10. Left Shoulder 11. Left Elbow 12. Left Wrist 13. Neck 14. Head top 15. Spine 16. Thorax 17. Nose
+'10'. Left Shoulder 11. Left Elbow 12. Left Wrist 13. Neck 14. Head top 15. Spine 16. Thorax 17. Nose
 
 Other keyborad short-cuts are:
 Press Q to exit the tool.
