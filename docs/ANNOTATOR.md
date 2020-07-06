@@ -26,7 +26,7 @@ Press C to erase all of the assigned keypoints from the image and start over.
 ## Coarse 3D Keypoints Estimation
 Manually annotating 3D skeleton from scratch is time-consuming, thus we use a tool to obtain an initial 3D pose estimation given 2D annotation. Any method that outputs 3D pose inference given 2D key-points can be employed.
 
-Here we use SMPLify to estimate coarse 3D skeleton. You need to set up a Python 2.7 environment where a spec-list can be used as your reference if you use Anaconda. Then you need to install chumpy and opendr using pip:
+Here we use SMPLify to estimate coarse 3D skeleton. You need to set up a Python 2.7 environment where a [spec-list](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/libs/annotator/smpl-spec-list.txt) can be used as your reference if you use Anaconda. Then you need to install chumpy and opendr using pip:
 ```bash
 pip install chumpy
 pip install opendr
