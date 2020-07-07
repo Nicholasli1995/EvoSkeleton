@@ -75,7 +75,7 @@ Press arrow keys (up and down) to rotate the bone vector.
 
 Press "m" to save an updated annotation file.
 
-Other keyboard inputs are detailed in the annotate_3D.py
+Other keyboard inputs are detailed in annotate_3D.py
 
 <p align="center">
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/tool.gif"/>
