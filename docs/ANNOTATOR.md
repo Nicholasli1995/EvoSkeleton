@@ -54,8 +54,20 @@ The fitting process can be shown during running and the file annotation.npy will
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/fitted.png"/>
 </p>
 
-## 3D Skeleton Annotation (Under Cleaning)
-One can modify the 3D parameters for RGB images interactively by running ${EvoSkeleton}/tools/annotate_3d.py
+## 3D Skeleton Interactive Annotation 
+After you have obtained fitted parameters for your dataset, you can modify the 3D parameters interactively with this tool. If you just want to try this tool without finishing the above steps, you can play with the pre-fitted parameters [here](https://drive.google.com/file/d/1OJokg844KDpRG3YQsZNpXwFXlVF8iOH5/view?usp=sharing) for U3DPW images. To start the tool, go to ${EvoSkeleton}/tools and run
+```bash
+python annotate_3D.py -dataset_dir DATASET_PATH
+```
+DATASET_PATH is the path to the folder containing the fitted parameters "fitted.npy". The tool will select one unannotated image, display it and start the interactive process. You can modify the global orientation as well as the limb orientation of the 3D skeleton. A 2D image with projected key-points will be plotted on-line so that you can check if your annotation is reasonable or not. 
+
+Some important keyborad short-cuts are:
+Press number keys (2-9) to select which bone vector to rotate.
+Press 0 so that the 3D skeleton will rotate as a whole.
+Press arrow keys (up and down) to rotate the bone vector.
+Press "m" to save an updated annotation file.
+Other keyboard inputs are detailed in the annotate_3D.py
+
 <p align="center">
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/tool.gif"/>
 </p>
