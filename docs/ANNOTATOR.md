@@ -18,9 +18,13 @@ Right Ankle, Right Knee, Right Hip, Left Hip, Left Knee, Left Ankle, Right Wrist
 Left Shoulder, Left Elbow, Left Wrist, Neck, Head top, Spine, Thorax, Nose
 
 Other keyborad short-cuts are:
+
 Press Q to exit the tool.
+
 Press N to go to the next image.
+
 Press Z to save the annotation.
+
 Press C to erase all of the assigned keypoints from the image and start over.
 
 ## Coarse 3D Keypoints Estimation
@@ -62,10 +66,15 @@ python annotate_3D.py -dataset_dir DATASET_PATH
 DATASET_PATH is the path to the folder containing the fitted parameters "fitted.npy". The tool will select one unannotated image, display it and start the interactive process. You can modify the global orientation as well as the limb orientation of the 3D skeleton. A 2D image with projected key-points will be plotted on-line so that you can check if your annotation is reasonable or not. 
 
 Some important keyborad short-cuts are:
+
 Press number keys (2-9) to select which bone vector to rotate.
+
 Press 0 so that the 3D skeleton will rotate as a whole.
+
 Press arrow keys (up and down) to rotate the bone vector.
+
 Press "m" to save an updated annotation file.
+
 Other keyboard inputs are detailed in the annotate_3D.py
 
 <p align="center">
