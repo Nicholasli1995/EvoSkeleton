@@ -486,9 +486,10 @@ def run_single_fit(img,
         images.append(im)
 
     # return fit parameters
+    # .r converts a chumpy array into numpy array
     params = {'cam_t': cam.t.r,
               'f': cam.f.r,
-              'v': v,
+              'v': v.r,
               'pose': sv.pose.r,
               'betas': sv.betas.r}
 

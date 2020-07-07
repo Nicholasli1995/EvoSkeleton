@@ -86,7 +86,7 @@ def main(opt):
             
     # save the annotation dictionary with fitted parameters
     np.save(os.path.join(opt.dataset_dir, "fitted.npy"), annotation)
-    print('3D prameters saved at ' + annotation_path)
+    print('3D prameters saved at ' + os.path.join(opt.dataset_dir, "fitted.npy"))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='2D Annotation')
@@ -94,6 +94,6 @@ if __name__ == '__main__':
     parser.add_argument('-model_dir', type=str)
     parser.add_argument('-save_image',default=True, type=bool)
     # visualize intermeadiate results
-    parser.add_argument('-viz',default=True, type=bool)
+    parser.add_argument('-viz',default=False, type=bool)
     opt = parser.parse_args() 
     main(opt)

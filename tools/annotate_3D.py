@@ -1,9 +1,8 @@
 """
 Interactive annotation tool for 3D human pose estimation.
-Author: Nicholas Li
-Contact: nicholasli@connect.ust.hk
+Given an image and a coarse 3D skeleton estimation, the user can interactively
+modify the 3D parameters and save them as the ground truth.
 """
-from __future__ import print_function
 from mpl_toolkits.mplot3d import Axes3D
 from scipy.spatial.transform import Rotation as R
 from cv2 import projectPoints
@@ -11,13 +10,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import argparse
 import imageio
-from glob import glob
 import sys
 import os
 
-from angle import get_basis1, normalize, gram_schmidt_columns
-from angle import nt_parent_indices, nt_child_indices, di_indices
-from angle import get_normal, di, a, to_spherical, to_xyz, bone_name
+sys.path.append("../")
+
+from libs.skeleton.anglelimits import get_basis1, normalize, gram_schmidt_columns
+from libs.skeleton.anglelimits import nt_parent_indices, nt_child_indices, di_indices
+from libs.skeleton.anglelimits import get_normal, di, a, to_spherical, to_xyz, bone_name
 
 ''' GLOBAL VARIABLES '''
 angle_idx = 0 # Bone angle to adjust
@@ -30,35 +30,40 @@ parent_indices = np.array([1,2,3,1,7,8,1, 13,14,15,14,18,19,14,26,27])-1
 child_indices = np.array([2,3,4,7,8,9,13,14,15,16,18,19,20,26,27,28])-1
 direction_name = ['x', 'y', 'z']
 
+# translation vector of the camera
 t = None
+# focal length of the camera
 f = None
+# intrinsic matrix for camera projection
+intrinsic_mat = None
 
+# Objects for ploting
 fig = None
 plot_ax = None
 img_ax = None
-
 skeleton = None
 lines = None 
 points = None
+RADIUS = 1 # Space around the subject
 
+# hierarchical representation
 local_systems = None
 need_to_update_lc = False
 bones_global = None
 bones_local = None
 angles = None
 
-save_path = None
+# file path
+annotation_path = None
+annotation = None
+img_name = None
 
-intrinsic_mat = None
-
+# some joint correspondence
 index_list = [13, 14, 129, 145]
-
 H36M_IDS = [0, 2, 5, 8, 1, 4, 7, 3, 12, 15, 24, 16, 18, 20, 17, 19, 21]
 USE_DIMS = [0, 1, 2, 3, 6, 7, 8, 12, 13, 14, 15, 17, 18, 19, 25, 26, 27]
 
-RADIUS = 1 # Space around the subject
-
-# Controls scheme
+# keyboard inputs
 bone_idx_keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 global_rot_key ='0'
 inc_step_key = 'd'
@@ -70,6 +75,9 @@ ang_ccw_key = 'left'
 save_key = 'm'
 
 def press(event):
+    """
+    Call-back function when user press any key.
+    """
     global angle_idx, direction, need_to_update_lc
     global bones_global, bones_local, skeleton, angles, local_systems
 
@@ -92,8 +100,6 @@ def press(event):
     if event.key == save_key:
         save_skeleton()
 
-    ''' TODO : CHANGE THE NOTES ''' 
-
     if angle_idx is not None:
         notes = 'current limb: ' + bone_name[angle_idx + 1]
         # update local coordinate systems if needed
@@ -112,8 +118,15 @@ def press(event):
         notes += ' direction: ' + direction_name[direction]
     plot_ax.set_xlabel(notes)
         
-def show3Dpose(channels, ax, lcolor="#3498db", rcolor="#e74c3c", add_labels=True,
-               gt=False,pred=False,inv_z=False): # blue, orange
+def show3Dpose(channels, 
+               ax, 
+               lcolor="#3498db", 
+               rcolor="#e74c3c", 
+               add_labels=True,
+               gt=False,
+               pred=False,
+               inv_z=False
+               ): 
 
     vals = np.reshape( channels, (32, -1) )
 
@@ -234,6 +247,9 @@ def to_local(skeleton):
     return bones, bones_local, local_systems
 
 def update_line(line_idx, parent_idx, child_idx):
+    """
+    Update 3D line segments.
+    """
     global lines
 
     # update 3D lines
@@ -249,6 +265,9 @@ def update_line(line_idx, parent_idx, child_idx):
     fig.canvas.draw_idle()
 
 def update_global(angle_idx):
+    """
+    Update bone vectors.
+    """
     global bones_global, bones_local, local_systems, skeleton
     bones_global[angle_idx] = local_systems[local_system_map[angle_idx]] @ bones_local[angle_idx]
     skeleton[nt_child_indices[angle_idx]] = skeleton[nt_parent_indices[angle_idx]] \
@@ -261,17 +280,24 @@ def update_global(angle_idx):
     update_line(line_idx, parent_idx, child_idx)
 
 def rotate_global(rot):
+    """
+    Change the global orientation of the 3D skeleton.
+    """
     global skeleton
     hip = skeleton[0].reshape(1,3)
     temp_skeleton = skeleton - hip
     skeleton = (rot.as_dcm() @ temp_skeleton.T).T + hip
 
     for line_idx in range(len(parent_indices)):
-        update_line(line_idx, parent_indices[line_idx], child_indices[line_idx])
+        update_line(line_idx, 
+                    parent_indices[line_idx], 
+                    child_indices[line_idx]
+                    )
 
 def update_skeleton(angle_idx, key_name):
-    ''' Update the global skeleton when joint angle changes. 
-        For lower limbs, change only the local limb coordinates. '''
+    """
+    Update the 3D skeleton with a specified keyboard input.
+    """
     global need_to_update_lc, local_systems
 
     # Rotate the lower-limb
@@ -321,103 +347,99 @@ def update_skeleton(angle_idx, key_name):
     update_projection()
 
 def update_projection():
+    """
+    Update the 2D projection of the 3D key-points.
+    """
     global points
     points.pop(0).remove()
-    proj2d = projectPoints(skeleton, np.zeros((3)), t, 
-                           intrinsic_mat, np.zeros((5)))
+    proj2d = projectPoints(skeleton, 
+                           np.zeros((3)), 
+                           t, 
+                           intrinsic_mat, 
+                           np.zeros((5))
+                           )
     proj2d = proj2d[0].reshape(-1,2)
     points = img_ax.plot(proj2d[:,0], proj2d[:,1], 'ro')   
     fig.canvas.draw_idle()
 
 def save_skeleton():
-    global skeleton, smpl_data, save_path
-    dic_to_save = {'auto':smpl_data, 'manual':skeleton}
-    np.save(save_path, dic_to_save)
-    print('File saved at' + save_path + '!')
+    """
+    Save the annotation file.
+    """
+    global annotation
+    annotation[img_name]['p3d'] = skeleton
+    np.save(annotation_path, annotation)
+    print('Annotated 3D parameters saved at ' + annotation_path)
 
-#===========================Data Loading======================================#
 def visualize(pose, skeleton, img):
+    """
+    Initialize the 3D and 2D plots.
+    """
     global lines, points, fig, plot_ax, img_ax, intrinsic_mat
-    
     fig = plt.figure() 
-
     # 3D Pose Plot
     plot_ax = plt.subplot(121, projection='3d')
 
     lines = show3Dpose(pose, plot_ax)
     fig.canvas.mpl_connect('key_press_event', press)
     plot_ax.set_title('1-9: limb selection, 0: global rotation, arrow keys: rotation')
-
-    # 2D Projection Plot (To-Do)
-    # fig2 = plt.figure()
-    # ax2 = plt.subplot(111)
-
     # Image Plot
     img_ax = plt.subplot(122)
     img_ax.imshow(img)
     intrinsic_mat = np.array([[f[0], 0.00e+00, float(img.shape[1])/2],
                               [0.00e+00, f[1], float(img.shape[0])/2],
                               [0.00e+00, 0.00e+00, 1.00e+00]])
-    proj2d = projectPoints(skeleton, np.zeros((3)), t, 
-                           intrinsic_mat, np.zeros((5)))
+    proj2d = projectPoints(skeleton, 
+                           np.zeros((3)), 
+                           t, 
+                           intrinsic_mat, 
+                           np.zeros((5))
+                           )
     proj2d = proj2d[0].reshape(-1,2)
     points = img_ax.plot(proj2d[:,0], proj2d[:,1], 'ro')
-
     # Show the plot
     plt.show()
 
-def main(args):
-    global t, f, angles, bones_global, bones_local, need_to_update_lc, local_system, skeleton, save_path
-    img_name_list = []
+def create_python3_file(opt):
+    """
+    The fitted parameters are stored using python 2. 
+    Create a Python 3 file from it when this script is executed for the first time.
+    """
+    fitted_path = os.path.join(opt.dataset_dir, "fitted.npy")
+    annotation_path = os.path.join(opt.dataset_dir, "annot_3d.npy")
+    if not os.path.exists(annotation_path):
+    # The fitting parameters are obtianed in Python 2 environment,
+    # thus the encoding argument is used here        
+        fitted = np.load(fitted_path, encoding='latin1', allow_pickle=True).item()   
+        np.save(annotation_path, fitted)
+    return
 
-    ''' SELECT DATASET ''' 
-    # Load LSD Dataset
-    if args.dataset == 'lsd':
-        dataset_path = './../dataset/lsd'
-        txt_path = os.path.join(dataset_path, 'cases.txt')
-        img_dir = os.path.join(dataset_path, 'images')
-        joints_path = os.path.join(dataset_path, 'annotations/est.npy')
-
-        with open(txt_path) as f:
-            content = f.read() 
-
-            for num in content.split('\n'):
-                if num == '':
-                    continue 
-
-                img_name = 'im' + num.zfill(4) + '.jpg' 
-                img_name = os.path.join(img_dir, img_name)
-                img_name_list.append(img_name)
-                
-        param_dir = os.path.join(dataset_path, 'processed')
-
-    # Load Custom Dataset
-    else:
-        dataset_path = args.dataset
-        img_dir = os.path.join(dataset_path, 'images')
-        joints_path = os.path.join(dataset_path, 'annotations/est.npy')
-
-        img_name_list = sorted(glob(os.path.join(img_dir, '*.jpg')))
-
-        param_dir = os.path.join(dataset_path, 'processed')
-
-    ''' LOAD IMAGES AND JOINTS '''
-    for i, (img_name) in enumerate(img_name_list):
-        smpl_path = os.path.join(param_dir, str(i) + '.npy')
-        save_path = os.path.join(param_dir, str(i) + '_modified.npy')
+def main(opt):
+    global t, f, angles, bones_global, bones_local, need_to_update_lc, \
+    local_system, skeleton, annotation_path, img_name, annotation
+    create_python3_file(opt)
+    annotation_path = os.path.join(opt.dataset_dir, "annot_3d.npy")
+    annotation = np.load(annotation_path, allow_pickle=True).item()    
+    for img_name in annotation.keys():
+        # e.g., img_name = '260.jpg'
+        img_name = '260.jpg'
+        # select one unannotated image and start the interactive annotation
+        if 'p3d' in annotation[img_name]:
+            continue
+        fitting_params = annotation[img_name]['fitting_params']
+        img_path = os.path.join(opt.dataset_dir, img_name)
         
-        img = imageio.imread(img_name)
-        smpl_data = np.load(smpl_path, encoding='latin1', allow_pickle=True).item()
+        img = imageio.imread(img_path)
 
-        # Convert original format to Human 3.6M Format
-        skeleton_origin = smpl_data['v'].reshape(-1, 3)
+        # Convert smpl format to Human 3.6M Format
+        skeleton_smpl = fitting_params['v'].reshape(-1, 3)
         skeleton = np.zeros((32, 3))
-        skeleton[USE_DIMS] = skeleton_origin[H36M_IDS]
+        skeleton[USE_DIMS] = skeleton_smpl[H36M_IDS]
 
         pose = skeleton.reshape(-1)
 
-        t = smpl_data['cam_t']
-        f = smpl_data['f']
+        t = fitting_params['cam_t']
+        f = fitting_params['f']
 
         # Convert skeleton to local coordinate system
         bones_global, bones_local, local_system = to_local(skeleton)
@@ -431,10 +453,12 @@ def main(args):
 
         # Visualize
         visualize(pose, skeleton, img)
+        
+        # annotate only one image at a time
+        break
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='3D Interactive Tool')
-    parser.add_argument('-d', '--dataset', default='lsd', type=str)
-    args = parser.parse_args()
-
-    main(args)
+    parser.add_argument('-dataset_dir', type=str)
+    opt = parser.parse_args()
+    main(opt)

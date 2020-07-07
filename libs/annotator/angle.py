@@ -15,7 +15,7 @@ bone_name = {
  9: 'right knee to right ankle'
 }      
 
-static_pose_path = "./constraints/staticPose.npy"
+static_pose_path = "/media/nicholas/Database/Github/EvoSkeleton/resources/constraints/staticPose.npy"
 static_pose = np.load(static_pose_path, allow_pickle=True).item()
 di = static_pose['di']
 a = static_pose['a'].reshape(3)

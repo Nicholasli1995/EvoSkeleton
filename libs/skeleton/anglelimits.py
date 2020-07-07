@@ -16,7 +16,7 @@ from mpl_toolkits.mplot3d import Axes3D
 root = "../resources/constraints"
 logging.info("Loading files from " + root)
 model_path = os.path.join(root, "jointAngleModel_v2.npy")
-joint_angle_limits = np.load(model_path).item()
+joint_angle_limits = np.load(model_path, allow_pickle=True).item()
 angle_spread = joint_angle_limits['angleSprd']
 # separation plane for conditional joint angle
 sepPlane = joint_angle_limits['sepPlane']
@@ -24,12 +24,12 @@ E2 = joint_angle_limits['E2']
 bounds = joint_angle_limits['bounds']
 # static pose and parameters used in coordinate transformation
 static_pose_path = os.path.join(root, "staticPose.npy")
-static_pose = np.load(static_pose_path).item()
+static_pose = np.load(static_pose_path, allow_pickle=True).item()
 di = static_pose['di']
 a = static_pose['a'].reshape(3)
 # load the pre-computed conditinal distribution 
 con_dis_path = os.path.join(root, "conditional_dis.npy")
-con_dis = np.load(con_dis_path).item()
+con_dis = np.load(con_dis_path, allow_pickle=True).item()
 #=============================================================================#
 # joint names of the CVPR 15 paper
 PRIOR_NAMES = ['back-bone', 
@@ -423,7 +423,7 @@ def test_global_local_conversion():
     """
     path='Your3DSkeleton.npy'
     index = 0
-    pose = np.load(path)[index] 
+    pose = np.load(path, allow_pickle=True)[index] 
     pose = pose.reshape(32, -1)    
     global_bones = pose[nt_parent_indices, :] - pose[nt_child_indices, :]    
     for bone_idx in range(len(global_bones)):    
@@ -680,7 +680,7 @@ def plot_distribution(H_temp,
 
 #=============================================================================#
 # sampling utilities: sample 3D human skeleton from a pre-computed distribution
-template = np.load(os.path.join(root, 'template.npy')).reshape(32,-1)  
+template = np.load(os.path.join(root, 'template.npy'), allow_pickle=True).reshape(32,-1)  
 template_bones = template[nt_parent_indices, :] - template[nt_child_indices, :]  
 template_bone_lengths = to_spherical(template_bones)[:, 0]
 nt_parent_indices = [13, 17, 18, 25, 26, 6, 7, 1, 2]
