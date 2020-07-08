@@ -36,7 +36,7 @@ This is the project website containing relevant files for the CVPR 2020 paper "C
 For a complete list of other python packages, please refer to [spec-list.txt](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/spec-list.txt). The recommended environment manager is Anaconda, which can create an environment using the provided spec-list. Certain tool in this project may need other specified environment, which is detailed in its corresponding page.
 
 ## License
-MIT
+A MIT license is used for this repository. However, certain third-party dataset (Human 3.6M) and tool (SMPLify) are subject to their respective licenses and may not grant commercial use.
 
 ## Citation
 Please consider citing the related papers in your publications if they help your research:
