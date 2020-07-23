@@ -1,6 +1,6 @@
 """
 Utility functions for dealing with Human3.6M dataset.
-Reference: https://github.com/una-dinosauria/3d-pose-baseline 
+Some functions are adapted from https://github.com/una-dinosauria/3d-pose-baseline 
 """
 
 import os
@@ -70,6 +70,15 @@ SH_NAMES[15] = 'LWrist'
 # stacked-hourglass model.  
 
 def list_remove(list_a, list_b):
+    """
+    Fine all elements of a list A that does not exist in list B.
+    
+    Args
+      list_a: list A
+      list_b: list B
+    Returns
+      list_c: result  
+    """
     list_c = []
     for item in list_a:
         if item not in list_b:
@@ -77,6 +86,9 @@ def list_remove(list_a, list_b):
     return list_c
 
 def add_virtual_cams(cams, visualize=False):
+    """
+    Deprecated. Add virtual cameras.
+    """
     # add more cameras to the scene
     #R, T, f, c, k, p, name = cams[ (1,1) ]
     # plot the position of human subjects
@@ -154,7 +166,6 @@ def add_virtual_cams(cams, visualize=False):
             else:
                 new = False
             add_coordinate_system(ax, T, R.T, new=new)
-        # 
         RADIUS = 3000 # space around the subject
         xroot, yroot, zroot = 0., 0., 500.
         ax.set_xlim3d([-RADIUS+xroot, RADIUS+xroot])
@@ -164,6 +175,15 @@ def add_virtual_cams(cams, visualize=False):
     return new_cams
 
 def down_sample_training_data(train_dict, opt):
+    """
+    Down-sample the training data.
+
+    Args
+      train_dict: python dictionary contraining the training data
+      opt: experiment options
+    Returns
+      train_dict/sampled_dict: a dictionary containing a subset of training data
+    """
     if opt.ws_name in ['S1', 'S15', 'S156']:
         sub_list = [int(opt.ws_name[i]) for i in range(1, len(opt.ws_name))]
         keys_to_delete = []
@@ -190,7 +210,12 @@ def down_sample_training_data(train_dict, opt):
     
 def get_train_dict_3d(opt):
     """
-    Load 3D skeleton data.
+    Get the training 3d skeletons as a Python dictionary.
+
+    Args
+      opt: experiment options
+    Returns
+      train_dict_3d: a dictionary containing training 3d poses
     """
     dict_path = os.path.join(opt.data_dir, 'threeDPose_train.npy')
     #=========================================================================#
@@ -217,6 +242,14 @@ def get_train_dict_3d(opt):
         return train_dict_3d
 
 def get_test_dict_3d(opt):
+    """
+    Get the testing 3d skeletons as a Python dictionary.
+
+    Args
+      opt: experiment options
+    Returns
+      test_dict_3d: a dictionary containing testing 3d poses
+    """       
     if opt.test_source == 'h36m':     
         # for h36m
         dict_path = os.path.join(opt.data_dir, 'threeDPose_test.npy')
@@ -227,7 +260,19 @@ def get_test_dict_3d(opt):
 
 def get_dict_2d(train_dict_3d, test_dict_3d, rcams, ncams, opt):
     """
-    Prepare 2D key-point data.
+    Prepare 2D training and testing data as Python dictionaries.
+
+    Args
+      train_dict_3d: dictionary containing training 3d poses
+      test_dict_3d: dictionary containing testing 3d poses
+      rcams: camera parameters
+      ncams: number of camera to use
+      opt: experiment options
+    Returns
+      train_dict_2d: a dictionary containing training 2d poses
+      test_dict_2d: a dictionary containing testing 2d poses
+      train_dict_3d: the dictionary containing training 3d poses, which may be
+      updated
     """     
     if opt.twoD_source == 'synthetic':
         # project the 3D key-points to 2D ones
@@ -245,6 +290,7 @@ def get_dict_2d(train_dict_3d, test_dict_3d, rcams, ncams, opt):
         # to regress high-resolution heatmaps.
         train_dict_2d = np.load(os.path.join(opt.data_dir, 'twoDPose_HRN_train.npy')).item()           
         test_dict_2d = np.load(os.path.join(opt.data_dir, 'twoDPose_HRN_test.npy')).item()
+        
         def delete(dic, actions):
             keys_to_delete = []
             for key in dic.keys():
@@ -274,6 +320,7 @@ def get_dict_2d(train_dict_3d, test_dict_3d, rcams, ncams, opt):
             for key in keys_to_delete:    
                 del dic[key]
             return dic
+        
         # down-sample the data for weakly-supervised experiment
         if opt.ws and opt.ws_name in ['S1', 'S15', 'S156']:
             sub_list = [int(opt.ws_name[i]) for i in range(1, len(opt.ws_name))]
@@ -283,15 +330,12 @@ def get_dict_2d(train_dict_3d, test_dict_3d, rcams, ncams, opt):
         if opt.evolved_path is not None:
             evolved_dict_3d = np.load(opt.evolved_path).item()
             evolved_dict_2d = project_to_cameras(evolved_dict_3d, rcams, ncams=ncams)
+            # combine the synthetic 2D-3D pair with the real 2D-3D pair
             train_dict_3d = {**train_dict_3d, **evolved_dict_3d}
             train_dict_2d = {**train_dict_2d, **evolved_dict_2d} 
-        # combine the synthetic 2D-3D pair with the real 2D-3D pair
     return train_dict_2d, test_dict_2d, train_dict_3d        
 
-def prepare_data_dict(actions,
-                      data_dir, 
-                      camera_frame, 
-                      rcams, 
+def prepare_data_dict(rcams, 
                       opt,
                       ncams=4,
                       predict_14=False, 
@@ -299,6 +343,16 @@ def prepare_data_dict(actions,
                       ):
     """
     Prepare 2D and 3D data as Python dictionaries.
+    
+    Args
+      rcams: camera parameters
+      opt: experiment options
+      ncams: number of camera to use
+      predict_14: whether to predict 14 joints or not
+      use_nose: whether to use nose joint or not
+    Returns
+      data_dic: a dictionary containing training and testing data
+      data_stats: statistics computed from training data 
     """
     assert opt.twoD_source in ['synthetic', 'HRN'], 'Unknown 2D key-point type.'
     data_dic = {}
@@ -364,6 +418,18 @@ def prepare_data_dict(actions,
     return data_dic, data_stats
 
 def select_action(dic_2d, dic_3d, action, twoD_source):
+    """
+    Construct sub-dictionaries by specifying which action to use
+    
+    Args
+        dic_2d: dictionary containing 2d poses
+        dic_3d: dictionary containing 3d poses
+        action: the action to use
+        twoD_source: how the key-points are generated (synthetic or real)
+    Returns
+        dic_2d_action: sub-dictionary containing 2d poses for the specified action
+        dic_3d_action: sub-dictionary containing 3d poses for the specified action 
+    """    
     dic_2d_action = {}
     dic_3d_action = {}
     for key in dic_2d.keys():
@@ -379,6 +445,18 @@ def select_action(dic_2d, dic_3d, action, twoD_source):
 def split_action(dic_2d, dic_3d, actions, camera_frame, opt, input_size, output_size):
     """
     Generate a list of datasets for each action.
+    
+    Args
+        dic_2d: dictionary containing 2d poses
+        dic_3d: dictionary containing 3d poses
+        actions: list of defined actions
+        camera_frame: use camera coordinate system
+        opt: experiment options
+        input_size: input vector length
+        output_size: output vector length
+    Returns
+        action_dataset_list: a list of datasets where each element correspond
+        to one action   
     """
     action_dataset_list = []
     for act_id in range(len(actions)):
@@ -398,8 +476,11 @@ def split_action(dic_2d, dic_3d, actions, camera_frame, opt, input_size, output_
         action_dataset_list.append(action_dataset)
     return action_dataset_list
 
-def normalization_stats(complete_data, dim, 
-                        predict_14=False, norm_twoD=False, use_nose=False
+def normalization_stats(complete_data, 
+                        dim, 
+                        predict_14=False, 
+                        norm_twoD=False, 
+                        use_nose=False
                         ):
     """
     Computes normalization statistics: mean and stdev, dimensions used and ignored
@@ -417,43 +498,36 @@ def normalization_stats(complete_data, dim,
     """
     if not dim in [2,3]:
         raise(ValueError, 'dim must be 2 or 3')
-    
     data_mean = np.mean(complete_data, axis=0)
     data_std  =  np.std(complete_data, axis=0)
-    
     # Encodes which 17 (or 14) 2d-3d pairs we are predicting
     dimensions_to_ignore = []
     if dim == 2:
         if not use_nose:
-            # the nose/neck is not used here -Nicholas 2019/06/07
-            dimensions_to_use    = np.where(np.array([x != '' and x != 'Neck/Nose' for x in H36M_NAMES]))[0]
+            dimensions_to_use = np.where(np.array([x != '' and x != 'Neck/Nose' for x in H36M_NAMES]))[0]
         else:
-            dimensions_to_use    = np.where(np.array([x != '' for x in H36M_NAMES]))[0]        
-        # added interpolated points -Nicholas 2019/09/11
-        # H36M_NAMES was modified before calling this function if interpolated
-            
-        # also delete hip joint if normalize to it - Nicholas 2019/07/03
+            dimensions_to_use = np.where(np.array([x != '' for x in H36M_NAMES]))[0]        
         if norm_twoD:
             dimensions_to_use = np.delete(dimensions_to_use, 0)
-        dimensions_to_use    = np.sort( np.hstack( (dimensions_to_use*2, dimensions_to_use*2+1)))
-        dimensions_to_ignore = np.delete( np.arange(len(H36M_NAMES)*2), dimensions_to_use )
-    else: # dim == 3
+        dimensions_to_use = np.sort(np.hstack((dimensions_to_use*2, 
+                                               dimensions_to_use*2+1)))
+        dimensions_to_ignore = np.delete(np.arange(len(H36M_NAMES)*2), 
+                                         dimensions_to_use)
+    else: 
         dimensions_to_use = np.where(np.array([x != '' for x in H36M_NAMES]))[0]
         # hip is deleted
-        # spine and neck are also deleted is predict_14 
-        dimensions_to_use = np.delete( dimensions_to_use, [0,7,9] if predict_14 else 0 )
-    
-        dimensions_to_use = np.sort( np.hstack( (dimensions_to_use*3,
-                                                 dimensions_to_use*3+1,
-                                                 dimensions_to_use*3+2)))
-        dimensions_to_ignore = np.delete( np.arange(len(H36M_NAMES)*3), dimensions_to_use )
-    
+        # spine and neck are also deleted if predict_14 
+        dimensions_to_use = np.delete(dimensions_to_use, [0,7,9] if predict_14 else 0)
+        dimensions_to_use = np.sort(np.hstack((dimensions_to_use*3,
+                                               dimensions_to_use*3+1,
+                                               dimensions_to_use*3+2)))
+        dimensions_to_ignore = np.delete(np.arange(len(H36M_NAMES)*3), 
+                                         dimensions_to_use)
     return data_mean, data_std, dimensions_to_ignore, dimensions_to_use
-
 
 def transform_world_to_camera(poses_set, cams, ncams=4):
     """
-    Project 3d poses from world coordinate to camera coordinate system
+    Transform 3d poses from world coordinate to camera coordinate system
     Args
       poses_set: dictionary with 3d poses
       cams: dictionary with cameras
@@ -463,23 +537,17 @@ def transform_world_to_camera(poses_set, cams, ncams=4):
     """
     t3d_camera = {}
     for t3dk in sorted(poses_set.keys()):
-
       subj, action, seqname = t3dk
-#      if t3dk not in poses_set:
-#          logging.info('debug')
       t3d_world = poses_set[t3dk]
-
       for c in range(ncams):
         R, T, f, c, k, p, name = cams[(subj, c+1)]
         camera_coord = cameras.world_to_camera_frame(np.reshape(t3d_world, [-1, 3]), R, T)
         camera_coord = np.reshape(camera_coord, [-1, len(H36M_NAMES)*3])
-
         sname = seqname[:-3]+"."+name+".h5" # e.g.: Waiting 1.58860488.h5
         t3d_camera[(subj, action, sname)] = camera_coord
-
     return t3d_camera
 
-def normalize_data(data, data_mean, data_std, dim_to_use, norm_single=False ):
+def normalize_data(data, data_mean, data_std, dim_to_use, norm_single=False):
     """
     Normalizes a dictionary of poses
     
@@ -488,12 +556,12 @@ def normalize_data(data, data_mean, data_std, dim_to_use, norm_single=False ):
         data_mean: np vector with the mean of the data
         data_std: np vector with the standard deviation of the data
         dim_to_use: list of dimensions to keep in the data
-        norm_single: whether to perform normalization independently for each input
+        norm_single: whether to perform normalization independently for each 
+        sample
     Returns
         data_out: dictionary with same keys as data, but values have been normalized
     """
     data_out = {}
-    
     for key in data.keys():
         data[ key ] = data[ key ][ :, dim_to_use ]
         if norm_single:
@@ -514,11 +582,10 @@ def normalize_data(data, data_mean, data_std, dim_to_use, norm_single=False ):
             data_out[ key ] = np.divide( (data[key] - mu), stddev )    
     return data_out
 
-
 def unNormalizeData(normalized_data, data_mean, data_std, dimensions_to_ignore):
     """
-    Un-normalizes a matrix whose mean has been substracted and that has been divided by
-    standard deviation. Some dimensions might also be missing
+    Un-normalizes a matrix whose mean has been substracted and that has been 
+    divided by standard deviation. Some dimensions might also be missing.
     
     Args
     normalized_data: nxd matrix to unnormalize
@@ -526,18 +593,15 @@ def unNormalizeData(normalized_data, data_mean, data_std, dimensions_to_ignore):
     data_std: np vector with the standard deviation of the data
     dimensions_to_ignore: list of dimensions that were removed from the original data
     Returns
-    orig_data: the input normalized_data, but unnormalized
+    orig_data: the unnormalized data
     """
-    T = normalized_data.shape[0] # Batch size
-    D = data_mean.shape[0] # Dimensionality
-    
+    T = normalized_data.shape[0] # batch size
+    D = data_mean.shape[0] # dimensionality
     orig_data = np.zeros((T, D), dtype=np.float32)
     dimensions_to_use = np.array([dim for dim in range(D)
                                     if dim not in dimensions_to_ignore])
-    
     orig_data[:, dimensions_to_use] = normalized_data
-    
-      # Multiply times stdev and add the mean
+    # multiply times stdev and add the mean
     stdMat = data_std.reshape((1, D))
     stdMat = np.repeat(stdMat, T, axis=0)
     meanMat = data_mean.reshape((1, D))
@@ -545,8 +609,7 @@ def unNormalizeData(normalized_data, data_mean, data_std, dimensions_to_ignore):
     orig_data = np.multiply(orig_data, stdMat) + meanMat
     return orig_data
 
-
-def define_actions( action ):
+def define_actions(action):
     """
     Given an action string, returns a list of corresponding actions.
     
@@ -557,10 +620,22 @@ def define_actions( action ):
     Raises
         ValueError: if the action is not a valid action in Human 3.6M
     """
-    actions = ["Directions","Discussion","Eating","Greeting",
-               "Phoning","Photo","Posing","Purchases",
-               "Sitting","SittingDown","Smoking","Waiting",
-               "WalkDog","Walking","WalkTogether"]
+    actions = ["Directions",
+               "Discussion",
+               "Eating",
+               "Greeting",
+               "Phoning",
+               "Photo",
+               "Posing",
+               "Purchases",
+               "Sitting",
+               "SittingDown",
+               "Smoking",
+               "Waiting",
+               "WalkDog",
+               "Walking",
+               "WalkTogether"
+               ]
     
     if action == "All" or action == "all":
         return actions
@@ -570,33 +645,30 @@ def define_actions( action ):
     
     return [action]
 
-def project_to_cameras( poses_set, cams, ncams=4 ):
+def project_to_cameras(poses_set, cams, ncams=4):
     """
     Project 3d poses using camera parameters
     
     Args
-        poses_set: dictionary with 3d poses
-        cams: dictionary with camera parameters
+        poses_set: dictionary containing 3d poses
+        cams: dictionary containing camera parameters
         ncams: number of cameras per subject
     Returns
         t2d: dictionary with 2d poses
     """
     t2d = {}
-    
     for t3dk in sorted(poses_set.keys()):
         subj, a, seqname = t3dk
         t3d = poses_set[t3dk]
-    
         for cam in range(ncams):
             R, T, f, c, k, p, name = cams[(subj, cam+1)]
             pts2d, _, _, _, _ = cameras.project_point_radial(np.reshape(t3d, [-1, 3]), R, T, f, c, k, p)        
             pts2d = np.reshape(pts2d, [-1, len(H36M_NAMES)*2])
             sname = seqname[:-3] + "." + name + ".h5" # e.g.: Waiting 1.58860488.h5
             t2d[ (subj, a, sname) ] = pts2d
-    
     return t2d
 
-def postprocess_3d( poses_set ):
+def postprocess_3d(poses_set):
     """
     Center 3d points around root
     
@@ -610,15 +682,13 @@ def postprocess_3d( poses_set ):
     for k in poses_set.keys():
         # Keep track of the global position
         root_positions[k] = copy.deepcopy(poses_set[k][:,:3])
-    
         # Remove the root from the 3d position
         poses = poses_set[k]
         poses = poses - np.tile( poses[:,:3], [1, len(H36M_NAMES)] )
         poses_set[k] = poses
-    
     return poses_set, root_positions
 
-def postprocess_2d( poses_set ):
+def postprocess_2d(poses_set):
     """
     Center 2d points around root
     
@@ -638,18 +708,25 @@ def postprocess_2d( poses_set ):
         poses_set[k] = poses
     return poses_set, root_positions
 
-def get_all_data(data_x, data_y, camera_frame, norm_twoD=False, input_size=32,
-                 output_size=48):
+def get_all_data(data_x, 
+                 data_y, 
+                 camera_frame, 
+                 norm_twoD=False, 
+                 input_size=32,
+                 output_size=48
+                 ):
     """
-    Obtain a list of all the batches, randomly permutted
+    Obtain numpy arrays for network inputs/outputs
+    
     Args
       data_x: dictionary with 2d inputs
       data_y: dictionary with 3d expected outputs
       camera_frame: whether the 3d data is in camera coordinates
-      training: True if this is a training batch. False otherwise.
+      input_size: input vector length for each sample
+      output_size: output vector length for each sample
     Returns
-      encoder_inputs: list of 2d batches
-      decoder_outputs: list of 3d batches
+      encoder_inputs: numpy array for the input data 
+      decoder_outputs: numpy array for the output data
     """
     if norm_twoD:
         input_size -= 2
@@ -680,7 +757,16 @@ def get_all_data(data_x, data_y, camera_frame, norm_twoD=False, input_size=32,
 
 def prepare_dataset(opt):
     """
-    Prepare PyTorch dataset objects used for training 2D-to-3D deep network.
+    Prepare PyTorch dataset objects used for training 2D-to-3D deep network
+    
+    Args
+        opt: experiment options
+    Returns
+        train_dataset: training dataset as PyTorch dataset object
+        eval_dataset: evaluation dataset as PyTorch dataset object 
+        data_stats: dataset statistics computed from the training dataset
+        action_eval_list: a list of evaluation dataset objects where each 
+        corresponds to one action
     """
     # get relevant paths
     data_dir =  opt.data_dir
@@ -693,10 +779,7 @@ def prepare_dataset(opt):
     if opt.virtual_cams:
         rcams = add_virtual_cams(rcams)
     # first prepare Python dictionary containing 2D and 3D data
-    data_dic, data_stats = prepare_data_dict(actions, 
-                                             data_dir,
-                                             camera_frame, 
-                                             rcams, 
+    data_dic, data_stats = prepare_data_dict(rcams, 
                                              opt,
                                              predict_14=False)
     input_size = len(data_stats['dim_use_2d'])
