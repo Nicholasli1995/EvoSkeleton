@@ -3,9 +3,9 @@
 .spyproject/
 /libs/annotator/fitted
 /libs/annotator/smplify/models
-data/
-resources/
-model/
+/data
+/resources
+/model
 *.yml
 *.log
 *.ini
