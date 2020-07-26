@@ -63,7 +63,7 @@ While the improvement using data evolution is less obvious in fully-supervised s
 | Ours                       | **50.9**        |  38.0            |
 
 ## Inference Example
-If you only want to use a pre-trained model to conduct inference on in-the-wild images (skipping data synthesis and model training), you can download the sample images and a pre-trained checkpoint here. Un-zip the downloaded file to "${EvoSkeleton}/examples" folder and your directory should look like this:
+If you only want to use a pre-trained model to conduct inference on in-the-wild images (skipping data synthesis and model training), you can download the sample images and a pre-trained checkpoint [here](https://drive.google.com/file/d/158oCTK-9Y8Bl9qxidoHcXfqfeeA7qT93/view?usp=sharing). Un-zip the downloaded file to "${EvoSkeleton}/examples" folder and your directory should look like this:
    ```
    ${EvoSkeleton}
    ├── examples
