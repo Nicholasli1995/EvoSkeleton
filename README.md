@@ -12,7 +12,7 @@ This is the project website containing relevant files for the CVPR 2020 paper "C
 ## Cascaded 2D-to-3D Lifting 
 [This sub-page](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/TRAINING.md) details how to train a cascaded model to lift 2D key-points to 3D skeletons.
 
-If you do not want to prepare synthetic data and train the model by yourself, you can access an examplar pre-trained model here (coming soon) and follow the inference section in the [document](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/TRAINING.md).  
+If you do not want to prepare synthetic data and train the model by yourself, you can access an examplar pre-trained model [here](https://drive.google.com/file/d/158oCTK-9Y8Bl9qxidoHcXfqfeeA7qT93/view?usp=sharing) and follow the inference section in the [document](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/TRAINING.md).  
 <p align="center">
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/architecture.jpg"/>
 </p>
