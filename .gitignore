@@ -6,6 +6,10 @@
 /data
 /resources
 /model
+/examples/imgs
+/examples/example_annot.npy
+/examples/example_model.th
+/examples/stats.npy
 *.yml
 *.log
 *.ini
