@@ -41,7 +41,7 @@ For a complete list of other python packages, please refer to [spec-list.txt](ht
 A MIT license is used for this repository. However, certain third-party dataset (Human 3.6M) and tool (SMPLify) are subject to their respective licenses and may not grant commercial use.
 
 ## Citation
-Please consider citing the related papers in your publications if they help your research:
+Please star this repository and cite the following paper in your publications if it helps your research:
 
     @InProceedings{Li_2020_CVPR,
     author = {Li, Shichao and Ke, Lei and Pratama, Kevin and Tai, Yu-Wing and Tang, Chi-Keung and Cheng, Kwang-Ting},
