@@ -239,7 +239,7 @@ def get_train_dict_3d(opt):
     else:
         # raw training data from Human 3.6M (S15678) 
         train_dict_3d = np.load(dict_path).item()
-        return train_dict_3d
+    return train_dict_3d
 
 def get_test_dict_3d(opt):
     """
@@ -358,7 +358,7 @@ def prepare_data_dict(rcams,
     data_dic = {}
     # get 3D skeleton data
     train_dict_3d = get_train_dict_3d(opt)
-    test_dict_3d = get_test_dict_3d(opt)                  
+    test_dict_3d = get_test_dict_3d(opt)
     # get 2D key-point data
     train_dict_2d, test_dict_2d, train_dict_3d = get_dict_2d(train_dict_3d, 
                                                              test_dict_3d, 
