@@ -17,7 +17,8 @@ num_joints = 16
 gt_3d = False  
 pose_connection = [[0,1], [1,2], [2,3], [0,4], [4,5], [5,6], [0,7], [7,8],
                    [8,9], [9,10], [8,11], [11,12], [12,13], [8, 14], [14, 15], [15,16]]
-re_order_idx_2d_MPI_H36M = [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16]
+# 16 out of 17 key-points are used as inputs in this examplar model
+re_order_indices= [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16]
 # paths
 data_dic_path = './example_annot.npy'     
 model_path = './example_model.th'
@@ -50,7 +51,7 @@ cascade.eval()
 count = 0
 total_to_show = 10
 
-def draw_skeleton(ax, skeleton, gt=False):
+def draw_skeleton(ax, skeleton, gt=False, add_index=True):
     for segment_idx in range(len(pose_connection)):
         point1_idx = pose_connection[segment_idx][0]
         point2_idx = pose_connection[segment_idx][1]
@@ -61,6 +62,13 @@ def draw_skeleton(ax, skeleton, gt=False):
                  [int(point1[1]),int(point2[1])], 
                  c=color, 
                  linewidth=2)
+    if add_index:
+        for (idx, re_order_idx) in enumerate(re_order_indices):
+            plt.text(skeleton[re_order_idx][0], 
+                     skeleton[re_order_idx][1],
+                     str(idx+1), 
+                     color='b'
+                     )
     return
 
 def normalize(skeleton, re_order=None):
@@ -162,7 +170,6 @@ def adjust_figure(left = 0,
     return
 
 for image_name in data_dic.keys():
-    count += 1
     image_path = './imgs/' + image_name
     img = imageio.imread(image_path)
     f = plt.figure(figsize=(9, 3))
@@ -175,9 +182,14 @@ for image_name in data_dic.keys():
     ax2.invert_yaxis()
     skeleton_pred = None
     skeleton_2d = data_dic[image_name]['p2d']
+    # The order for the 2D keypoints is:
+    # 'Hip', 'RHip', 'RKnee', 'RFoot', 'LHip', 'LKnee', 'LFoot', 'Spine', 
+    # 'Thorax', 'Neck/Nose', 'Head', 'LShoulder', 'LElbow', 'LWrist', 'RShoulder'
+    # 'RElbow', 'RWrist'
     draw_skeleton(ax2, skeleton_2d, gt=True)
-    plt.plot(skeleton_2d[:,0], skeleton_2d[:,1], 'ro', 2)        
-    norm_ske_gt = normalize(skeleton_2d, re_order_idx_2d_MPI_H36M).reshape(1,-1)
+    plt.plot(skeleton_2d[:,0], skeleton_2d[:,1], 'ro', 2)       
+    # Nose was not used for this examplar model
+    norm_ske_gt = normalize(skeleton_2d, re_order_indices).reshape(1,-1)
     pred = get_pred(cascade, torch.from_numpy(norm_ske_gt.astype(np.float32)))      
     pred = unNormalizeData(pred.data.numpy(),
                            stats['mean_3d'],
@@ -197,6 +209,7 @@ for image_name in data_dic.keys():
                   top = 0.92,
                   wspace = 0.3, 
                   hspace = 0.3
-                  )              
-    if count>total_to_show:
+                  )       
+    count += 1       
+    if count >= total_to_show:
         break
