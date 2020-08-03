@@ -77,3 +77,7 @@ Then you can run the following command at "${EvoSkeleton}/examples" to perform i
 ```bash
 python inference.py
 ```
+
+<p align="center">
+  <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/example.png"/>
+</p>
