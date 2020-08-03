@@ -175,9 +175,9 @@ for image_name in data_dic.keys():
     f = plt.figure(figsize=(9, 3))
     ax1 = plt.subplot(131)
     ax1.imshow(img)
-    plt.title('Inputs to a cascaded model')
+    plt.title('Input image')
     ax2 = plt.subplot(132)
-    plt.title('Input to stage 2: {:d}*2'.format(num_joints))
+    plt.title('2D key-point inputs: {:d}*2'.format(num_joints))
     ax2.set_aspect('equal')
     ax2.invert_yaxis()
     skeleton_pred = None
