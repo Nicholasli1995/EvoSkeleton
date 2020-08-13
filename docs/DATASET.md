@@ -12,13 +12,13 @@ You can access the dataset [here](https://drive.google.com/file/d/1T19RH73F0EUSs
    ```
 ## Annotation
 The annotation file is a Python dictionary that has the following format:
-p2d is a numpy array of shape (num_keypoints, 2) that stores the image coordinates of the 2D key-points. Each row in the array stores (x, y) coordinate of the corresponding key-point.
+p2d is a numpy array of shape (num_keypoints, 2) that stores the image coordinates of the 2D key-points. Each row in the array stores (x, y) coordinate of the corresponding key-point. These key-points are re-annotated with a style similar to that of Human 3.6M, and can be accessed through key 'h36m'.
 lsp is a boolean flag that indicates whether the image is collected from [Leeds Sport Pose dataset](https://sam.johnson.io/research/lsp.html) or not.
 
 ```
 {
-'image_name1':{p2d:array1, lsp:True/False},
-'image_name2':{p2d:array2, lsp:True/False},
+'image_name1':{'p2d':array1, 'lsp':True/False, 'h36m':array2},
+'image_name2':{'p2d':array3, 'lsp':True/False, 'h36m':array4},
 ...
 }
 ```
