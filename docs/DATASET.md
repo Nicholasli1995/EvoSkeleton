@@ -24,14 +24,24 @@ lsp is a boolean flag that indicates whether the image is collected from [Leeds 
 ```
 
 ## Key-point Semantics
-The name of the key-points are:
+The name of the Human 3.6M style key-points are:
 
-| Index | Keypoint | Index | Keypoint |
-|---|-------------|----|----------------|
-| 0 | Right Ankle | 7  | Right Elbow    |
-| 1 | Right Knee  | 8  | Right Shoulder |
-| 2 | Right Hip   | 9  | Left SHoulder  |
-| 3 | Left Hip    | 10 | Left Elbow     |
-| 4 | Left Knee   | 11 | Left Wrist     |
-| 5 | Left Ankle  | 12 | Neck           |
-| 6 | Right Wrist | 13 | Head Top       |
+| Index | Keypoint |
+|---|-------------|
+| 0 | Hip Center  | 
+| 1 | Right Hip   | 
+| 2 | Right Knee  |
+| 3 | Right Ankle |
+| 4 | Left Hip    |
+| 5 | Left Knee   |
+| 6 | Left Ankle  | 
+| 7 | Spine       |
+| 8 | Thorax      |
+| 9 | Neck        |  
+| 10 | Head Top   |
+| 11 | Left SHoulder |
+| 12 | Left Elbow |
+| 13 | Left Wrist |
+| 14 | Right Shoulder |
+| 15 | Right Elbow|
+| 16 | Right Wrist| 
