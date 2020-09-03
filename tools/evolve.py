@@ -101,8 +101,8 @@ def split_and_save(evolved_population):
     for subject_idx in range(len(temp_subject_list)):
         test_set_3d[(temp_subject_list[subject_idx], 'n/a', 'n/a')] =\
         poses_list[subject_idx] 
-    np.save('../data/human3.6M/h36m/numpy/threeDPose_train_20191005_split.npy', train_set_3d)
-    np.save('../data/human3.6M/h36m/numpy/threeDPose_test_20191005.npy', test_set_3d)    
+    np.save('../data/human3.6M/h36m/numpy/threeDPose_train_split.npy', train_set_3d)
+    np.save('../data/human3.6M/h36m/numpy/threeDPose_test.npy', test_set_3d)    
     return
 
 def visualize(initial_population, evolved_population):
@@ -124,7 +124,6 @@ def visualize(initial_population, evolved_population):
     plt.tight_layout() 
     # after evolution
     chosen_indices = np.random.choice(len(evolved_population) - len(initial_population), 9, replace=False)
-    #chosen_indices = np.array(list(range(62149, 62156)))
     plt.figure()
     for idx in range(9):
         ax = plt.subplot(3, 3, idx+1, projection='3d')
@@ -149,17 +148,7 @@ def main():
         evolved_population = evolution(initial_population,
                                        opt,
                                        model_file=model_file
-                                       )
-            
-        # randomly modify the bone lengths and apply random global rotation
-#        if opt.MRG > 0.:
-#            chosen_indices = np.random.choice(len(evolved_population), 
-#                                              int(opt.MRG*len(evolved_population)), 
-#                                              replace=False
-#                                              )
-#            for i in range(len(chosen_indices)):
-#                evolved_population[chosen_indices[i]] = random_rotation(evolved_population[chosen_indices[i]])
-        
+                                       )        
         if opt.split:
             split_and_save(evolved_population)
     
