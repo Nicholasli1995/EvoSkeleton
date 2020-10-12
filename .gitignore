@@ -3,8 +3,6 @@
 .spyproject/
 /libs/annotator/fitted
 /libs/annotator/smplify/models
-/data
-/resources
 /model
 /examples/imgs
 /examples/example_annot.npy
