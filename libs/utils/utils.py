@@ -211,12 +211,13 @@ def visualize_cascade(eval_dataset, cascade, stats, opt, save=False, save_dir=No
         if save and current_batch > num_batches:
             break
         data = batch[0]
-        ## Experiment 2019/10/16
-        enc_in = np.array([[648., 266], [679, 311], [688, 320], [693, 161],
-                   [620, 244], [526, 156], [642, 160], [590, 310],
-                   [505, 350], [380, 375], [491, 285],
-                   [543, 190], [572, 119], [515, 417], [518, 514],
-                   [512, 638]],dtype=np.float32)
+        ## debug
+        # enc_in = np.array([[648., 266], [679, 311], [688, 320], [693, 161],
+        #            [620, 244], [526, 156], [642, 160], [590, 310],
+        #            [505, 350], [380, 375], [491, 285],
+        #            [543, 190], [572, 119], [515, 417], [518, 514],
+        #            [512, 638]],dtype=np.float32)
+        enc_in = data
         enc_in = enc_in.reshape(1, 32)
         # normalize
         data_mean_2d = stats['mean_2d']
@@ -247,15 +248,15 @@ def visualize_cascade(eval_dataset, cascade, stats, opt, save=False, save_dir=No
         for stage_idx in range(num_stages):
             prediction_stages[stage_idx] = data_utils.unNormalizeData(prediction_stages[stage_idx].data.cpu().numpy(), 
             stats['mean_3d'], stats['std_3d'], stats['dim_ignore_3d'])
-        ## Experiment 2019/10/16
-        import scipy.io as sio
-        p3d = prediction_stages[0]
-        sio.savemat('./teaser_pose3d.mat', {'pred_3d':p3d.reshape(32,3),
-                    'pred_2d':np.array([[648., 266], [679, 311], [688, 320], [693, 161],
-                   [620, 244], [526, 156], [642, 160], [590, 310],
-                   [505, 350], [447, 348], [380, 375], [491, 285],
-                   [543, 190], [572, 119], [515, 417], [518, 514],
-                   [512, 638]])})        
+        ## save intermediate results
+        # import scipy.io as sio
+        # p3d = prediction_stages[0]
+        # sio.savemat('./teaser_pose3d.mat', {'pred_3d':p3d.reshape(32,3),
+        #             'pred_2d':np.array([[648., 266], [679, 311], [688, 320], [693, 161],
+        #            [620, 244], [526, 156], [642, 160], [590, 310],
+        #            [505, 350], [447, 348], [380, 375], [491, 285],
+        #            [543, 190], [572, 119], [515, 417], [518, 514],
+        #            [512, 638]])})        
         ## End Experiment 2019/10/16
         # visualizing
         if save:

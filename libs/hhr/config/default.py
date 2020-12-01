@@ -127,16 +127,18 @@ _C.DEBUG.SAVE_HEATMAPS_PRED = False
 
 def update_config(cfg, args):
     cfg.defrost()
-    cfg.merge_from_file(args.cfg)
-    cfg.merge_from_list(args.opts)
+    if hasattr(args, 'cfg'):
+        cfg.merge_from_file(args.cfg)
+    if hasattr(args, 'opts'):
+        cfg.merge_from_list(args.opts)
 
-    if args.modelDir:
+    if hasattr(args, 'modelDir') and args.modelDir:
         cfg.OUTPUT_DIR = args.modelDir
 
-    if args.logDir:
+    if hasattr(args, 'logDir') and args.logDir:
         cfg.LOG_DIR = args.logDir
 
-    if args.dataDir:
+    if hasattr(args, 'dataDir') and args.dataDir:
         cfg.DATA_DIR = args.dataDir
 
     cfg.DATASET.ROOT = os.path.join(

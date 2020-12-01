@@ -86,7 +86,7 @@ class JointsOHKMMSELoss(nn.Module):
 
         return self.ohkm(loss)
 
-# soft-arg loss 
+# soft-argmax
 def get_max_preds_soft_pt(batch_heatmaps):
     # pytorch version of the above function using tensors
     assert len(batch_heatmaps.shape) == 4, 'batch_images should be 4-ndim'

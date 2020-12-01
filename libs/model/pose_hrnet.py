@@ -330,7 +330,7 @@ class PoseHighResolutionNet(nn.Module):
 
         self.pretrained_layers = cfg['MODEL']['EXTRA']['PRETRAINED_LAYERS']
         
-        # Temp test: add a pixel shuffle upsampling layer
+        # add a pixel shuffle upsampling layer
         self.upsample_layer = nn.Sequential(
                 nn.Conv2d(17, 17*16, kernel_size=1),
                 nn.BatchNorm2d(17*16),

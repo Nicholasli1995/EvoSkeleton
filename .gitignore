@@ -8,6 +8,7 @@
 /examples/example_annot.npy
 /examples/example_model.th
 /examples/stats.npy
+/examples/h36m2Dpose/final_state.pth
 *.yml
 *.log
 *.ini
