@@ -14,4 +14,4 @@ Then run h36m2Dpose.py at ${EvoSkeleton}/examples
 python h36m2Dpose.py
 ```
 
-You should expect to see results like [this](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/h36m2dpose2.png).
+You should expect to see results like [this](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/h36m2dpose2.png). I only uploaded a few example images since I cannot upload the whole video due to the license requirement. For your own images, you should crop the humans and prepare your data accordingly.
