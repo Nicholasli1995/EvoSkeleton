@@ -15,3 +15,6 @@ python h36m2Dpose.py
 ```
 
 You should expect to see results like [this](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/h36m2dpose2.png). I only uploaded a few example images since I cannot upload the whole video due to the license requirement. For your own images, you should crop the humans and prepare your data accordingly.
+<p align="center">
+  <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/h36m2dpose.png" width="924" height="506"/>
+</p>
