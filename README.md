@@ -29,6 +29,12 @@ If you do not want to prepare synthetic data and train the model by yourself, yo
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/tool.gif" width="531" height="291"/>
 </p>
 
+## 2D Human Pose Estimation on H3.6M
+[This page](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/2DHPE.md) shows how to perform 2D human pose estimation on Human 3.6M dataset with the pre-trained high-resolution heatmap regression model.
+<p align="center">
+  <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/h36m2dpose2.png" width="789" height="208"/>
+</p>
+
 ## Environment
 - Python 3.6
 - Numpy 1.16
