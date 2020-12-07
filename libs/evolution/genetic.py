@@ -83,8 +83,10 @@ bone_indices = {0: [5, 6, 7, 8],
                 26: [4]
                 }
 
-
-bl_templates = np.load(os.path.join(root, "bones.npy"))
+# load template bone lengths that can be used during mutation
+# you can prepare your own bone length templates to represent 
+# subjects with different size
+bl_templates = np.load(os.path.join(root, "bones.npy"), allow_pickle=True)
 
 # pre-compute the sub-tree joint indices for each joint
 subtree_indices = {}
