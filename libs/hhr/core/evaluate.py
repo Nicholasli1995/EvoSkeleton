@@ -83,7 +83,9 @@ def get_distance(gt, pred):
     return dist
 
 def accuracy_pixel(output, meta_data, image_size = (288.0, 384.0), arg_max='hard'):
-    # report distance in terms of pixel in the original image
+    ''' 
+    Report errors in terms of pixels in the original image plane.
+    '''
     if arg_max == 'soft':
         if isinstance(output, np.ndarray):
             pred, max_vals = get_max_preds_soft(output)

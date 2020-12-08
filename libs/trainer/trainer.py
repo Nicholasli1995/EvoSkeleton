@@ -215,6 +215,9 @@ def train(train_dataset,
     return {'model':model, 'batch_idx':x_data, 'loss':y_data}  
 
 def evaluate_action_wise(dataset_list, model, stats, opt):
+    """
+    Evaluate for a list of dataset objects, where each contains inputs for one action.
+    """
     record_P1 = {}
     record_P2 = {}
     average_P1 = 0
@@ -275,7 +278,6 @@ def evaluate(eval_dataset,
     Adapted from ICCV 2017 baseline
     https://github.com/una-dinosauria/3d-pose-baseline    
     """
-    
     num_of_joints = 14 if opt.pred14 else 17 
     all_dists = []
     model.eval()

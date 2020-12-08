@@ -530,7 +530,7 @@ child_idx = [6, 7, 8, \
              25, 26, 27]
 
 def position_to_angle(skeletons):
-    # transfer 3d positions to joint angle representation 
+    # transform 3d positions to joint angle representation 
     
     # first compute the bone vectors
     # a bone vector is the vector from on parent joint to one child joint 
@@ -550,7 +550,7 @@ def position_to_angle(skeletons):
     return rphitheta
 
 def angle_to_position(rphitheta, skeletons):
-    # transfer joint angle representation to 3d positions 
+    # transform joint angle representation to 3d positions 
     # starting from the root, create joint one by one according to predefined
     # hierarchical relation
     num_sample = skeletons.shape[0]
