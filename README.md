@@ -1,6 +1,9 @@
 # EvoSkeleton
 This is the project website containing relevant files for the CVPR 2020 paper "Cascaded Deep Monocular 3D Human Pose Estimation with Evolutionary Training Data". The usage and instructions are organized into several parts serving distinct purposes. Please visit the corresponding sub-page for details. 
 
+News:
+(2021-04-05): A new release is planned on or before 2021-04-12. More pre-trained models will be added. MPJPE for each specific action will be added in the arxiv paper for reference.
+
 ## Hierarchical Human Representation and Data Synthesis
 [This sub-page](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/HHR.md) gives instructions on how to use the 3D skeleton model and how the evolution algorithm can be used to discover novel data.
 <p align="center">
