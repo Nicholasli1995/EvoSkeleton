@@ -3,7 +3,7 @@ Utilities to deal with the cameras of human3.6m.
 Reference: https://github.com/una-dinosauria/3d-pose-baseline 
 """
 import numpy as np
-import h5py
+# import h5py
 
 def project_point_radial( P, R, T, f, c, k, p ):
     """
@@ -117,24 +117,24 @@ def load_camera_params( hf, path ):
     
     return R, T, f, c, k, p, name
 
-def load_cameras( bpath='cameras.h5', subjects=[1,5,6,7,8,9,11] ):
-    """
-    Loads the cameras of h36m
+# def load_cameras( bpath='cameras.h5', subjects=[1,5,6,7,8,9,11] ):
+#     """
+#     Loads the cameras of h36m
 
-    Args
-        bpath: path to hdf5 file with h36m camera data
-        subjects: List of ints representing the subject IDs for which cameras 
-        are requested
-    Returns
-        rcams: dictionary of 4 tuples per subject ID containing its camera 
-        parameters for the 4 h36m cams
-    """
-    rcams = {}
+#     Args
+#         bpath: path to hdf5 file with h36m camera data
+#         subjects: List of ints representing the subject IDs for which cameras 
+#         are requested
+#     Returns
+#         rcams: dictionary of 4 tuples per subject ID containing its camera 
+#         parameters for the 4 h36m cams
+#     """
+#     rcams = {}
     
-    with h5py.File(bpath,'r') as hf:
-        for s in subjects:
-            for c in range(4): # There are 4 cameras in human3.6m
-                string = 'subject%d/camera%d/{0}' % (s,c+1)
-                rcams[(s, c+1)] = load_camera_params(hf, string)
+#     with h5py.File(bpath,'r') as hf:
+#         for s in subjects:
+#             for c in range(4): # There are 4 cameras in human3.6m
+#                 string = 'subject%d/camera%d/{0}' % (s,c+1)
+#                 rcams[(s, c+1)] = load_camera_params(hf, string)
     
-    return rcams
+#     return rcams

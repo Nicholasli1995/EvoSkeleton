@@ -161,7 +161,8 @@ def train(train_dataset,
         train_loader = torch.utils.data.DataLoader(train_dataset, 
                                                    batch_size=opt.batch_size, 
                                                    shuffle=True, 
-                                                   num_workers=opt.num_threads)    
+                                                   num_workers=opt.num_threads
+                                                   )    
         num_batches = len(train_loader)
         for batch_idx, batch in enumerate(train_loader):
             data = batch[0]

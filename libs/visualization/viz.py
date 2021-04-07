@@ -5,7 +5,7 @@ Functions to visualize human poses
 import matplotlib.pyplot as plt
 import libs.dataset.h36m.data_utils as data_utils
 import numpy as np
-import h5py
+# import h5py
 import os
 from mpl_toolkits.mplot3d import Axes3D
 

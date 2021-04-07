@@ -29,12 +29,12 @@ def parse_arg():
     # number of threads to use when loading data
     parser.add_argument('-num_threads', type=int, default=4)
     # update leaf node distribution every certain number of network training
-    parser.add_argument('-gpuid', type=int, default=1)
+    parser.add_argument('-gpuid', type=int, default=0)
     parser.add_argument('-epochs', type=int, default=200)
     # report_every: 10
     parser.add_argument('-report_every', type=int, default=100)
     # whether to perform evaluation on evaluation set during training
-    parser.add_argument('-eval', type=bool, default=True)
+    parser.add_argument('-eval', type=bool, default=False)
     # whether to evaluate for each action during the training
     parser.add_argument('-eval_action_wise', type=bool, default=True)   
     # what protocol to use for evaluation

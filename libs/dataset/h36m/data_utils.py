@@ -222,23 +222,23 @@ def get_train_dict_3d(opt):
     # For real 2D detections, the down-sampling and data augmentation 
     # are done later in get_train_dict_2d
     if opt.twoD_source != 'synthetic':
-        train_dict_3d = np.load(dict_path).item()
+        train_dict_3d = np.load(dict_path, allow_pickle=True).item()
         return train_dict_3d
     #=========================================================================#
     # For synthetic 2D detections (For Protocol P1*), the down-sampling is 
     # performed here and the data augmentation is assumed to be already done
     if opt.evolved_path is not None:
         # the data is pre-augmented
-        train_dict_3d = np.load(opt.evolved_path).item()
+        train_dict_3d = np.load(opt.evolved_path, allow_pickle=True).item()
     elif opt.ws:
         # raw training data from Human 3.6M (S15678) 
         # Down-sample the raw data to simulate an environment with scarce 
         # training data, which is used in weakly-supervised experiments        
-        train_dict_3d = np.load(dict_path).item()
+        train_dict_3d = np.load(dict_path, allow_pickle=True).item()
         train_dict_3d = down_sample_training_data(train_dict_3d, opt)
     else:
         # raw training data from Human 3.6M (S15678) 
-        train_dict_3d = np.load(dict_path).item()
+        train_dict_3d = np.load(dict_path, allow_pickle=True).item()
     return train_dict_3d
 
 def get_test_dict_3d(opt):
@@ -253,7 +253,7 @@ def get_test_dict_3d(opt):
     if opt.test_source == 'h36m':     
         # for h36m
         dict_path = os.path.join(opt.data_dir, 'threeDPose_test.npy')
-        test_dict_3d  = np.load(dict_path).item()   
+        test_dict_3d  = np.load(dict_path, allow_pickle=True).item()   
     else:
         raise NotImplementedError    
     return test_dict_3d
@@ -288,8 +288,8 @@ def get_dict_2d(train_dict_3d, test_dict_3d, rcams, ncams, opt):
         # The 2D key-point detections obtained by the heatmap regression model.
         # The model uses high-resolution net as backbone and pixel-shuffle super-resolution
         # to regress high-resolution heatmaps.
-        train_dict_2d = np.load(os.path.join(opt.data_dir, 'twoDPose_HRN_train.npy')).item()           
-        test_dict_2d = np.load(os.path.join(opt.data_dir, 'twoDPose_HRN_test.npy')).item()
+        train_dict_2d = np.load(os.path.join(opt.data_dir, 'twoDPose_HRN_train.npy'), allow_pickle=True).item()           
+        test_dict_2d = np.load(os.path.join(opt.data_dir, 'twoDPose_HRN_test.npy'), allow_pickle=True).item()
         
         def delete(dic, actions):
             keys_to_delete = []
@@ -328,7 +328,7 @@ def get_dict_2d(train_dict_3d, test_dict_3d, rcams, ncams, opt):
             remove_keys(train_dict_2d, sub_list)
         # data augmentation with evolved data
         if opt.evolved_path is not None:
-            evolved_dict_3d = np.load(opt.evolved_path).item()
+            evolved_dict_3d = np.load(opt.evolved_path, allow_pickle=True).item()
             evolved_dict_2d = project_to_cameras(evolved_dict_3d, rcams, ncams=ncams)
             # combine the synthetic 2D-3D pair with the real 2D-3D pair
             train_dict_3d = {**train_dict_3d, **evolved_dict_3d}
@@ -774,7 +774,7 @@ def prepare_dataset(opt):
     # By default, all actions are used
     actions = define_actions(opt.actions)
     # load camera parameters to project 3D skeleton
-    rcams = np.load(cameras_path).item()    
+    rcams = np.load(cameras_path, allow_pickle=True).item()    
     # produce more camera views by adding virtual cameras if needed
     if opt.virtual_cams:
         rcams = add_virtual_cams(rcams)

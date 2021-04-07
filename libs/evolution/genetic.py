@@ -10,6 +10,9 @@ is_valid_local, is_valid
 import matplotlib.pyplot as plt
 import os
 import logging
+logging.basicConfig(level=logging.INFO,
+                    format="[%(asctime)s]: %(message)s"
+                    )
 import numpy as np
 import torch
 from mpl_toolkits.mplot3d import Axes3D
@@ -277,8 +280,15 @@ def exploration(father, mother, opt, post_processing=True):
         plt.tight_layout() 
     return son_pose, daughter_pose
 
-def show3Dpose(channels, ax, lcolor="#3498db", rcolor="#e74c3c", add_labels=True,
-               gt=False,pred=False,plot_dot=False): # blue, orange
+def show3Dpose(channels, 
+               ax, 
+               lcolor="#3498db", 
+               rcolor="#e74c3c", 
+               add_labels=True,
+               gt=False,
+               pred=False,
+               plot_dot=False
+               ): # blue, orange
   """
   Visualize a 3d skeleton
 

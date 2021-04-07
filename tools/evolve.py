@@ -141,7 +141,7 @@ def main():
     opt = parse_arg()    
     if opt.generate:
         # get the training set of human 3.6M 
-        data_dic = np.load(opt.data_path).item()
+        data_dic = np.load(opt.data_path, allow_pickle=True).item()
         initial_population = initialize_population(data_dic, opt)
         # load a pre-trained model for active searching (optional)
         model_file = initialize_model_file(opt)      

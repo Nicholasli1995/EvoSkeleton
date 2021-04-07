@@ -4,7 +4,7 @@ Arguments and hyper-parameters used in dataset evolution.
 import argparse
 
 def parse_arg():
-    parser = argparse.ArgumentParser(description='main.py')
+    parser = argparse.ArgumentParser(description='evolve.py')
     ##-----------------------------------------------------------------------##
     ## Hyper-parameters    
     # Number of generation to run
