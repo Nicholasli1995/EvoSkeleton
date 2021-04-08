@@ -1,7 +1,6 @@
 This page presents model performance on H36M under various settings. Pre-trained models and instructions for reproduction can also be found.
 
 ## Fully-supervised Setting (S15678)
-MPJPE (P1) for each action under fully-supervised setting is shown in the table below.
 
 [Download our pre-trained model](https://drive.google.com/drive/folders/1IRKUWrnheD03Dj30LLGlh_LLT1CK6dr5?usp=sharing)
 
@@ -19,7 +18,7 @@ Data synthesis command ([Docs](https://github.com/Nicholasli1995/EvoSkeleton/blo
 ```bash
 python evolve.py -SS "S15678" -T 1.5 -SD "YourDataPath" -generate True
 ```
-
+MPJPE (P1) for each action under fully-supervised setting is shown in the table below.
 | Protocol \#1                                      | Dir.             | Disc             | Eat           | Greet            | Phone         | Photo         | Pose | Purch.        | Sit              | SitD.            | Smoke         | Wait          | WalkD.        | Walk          | WalkT.        | Avg.          |
 |-------------------------------------------------------------|------------------|------------------|---------------|------------------|---------------|---------------|------|---------------|------------------|------------------|---------------|---------------|---------------|---------------|---------------|---------------|
 | Martinez (ICCV'17)   | 51.8             | 56.2             | 58.1          | 59.0             | 69.5          | 78.4          | 55.2 | 58.1          | 74.0             | 94.6             | 62.3          | 59.1          | 65.1          | 49.5          | 52.4          | 62.9          |
@@ -47,7 +46,6 @@ MPJPE (P2) for each action under fully-supervised setting is shown in the table 
 | Ours (S15678)                                        |34.2|34.6|37.3|39.3|38.5|45.6|34.5|32.7|40.5|51.3|37.7|35.4|39.9|29.9|34.5| 37.7 |
 
 ## Weakly-supervised Setting (S1)
-MPJPE (P1) for each action under weakly-supervised setting is shown in the table below.
 
 [Download our pre-trained model](https://drive.google.com/drive/folders/1PZoiizPKeoFTsvnFKIxaRDNbyb0Csx50?usp=sharing)
 
@@ -65,7 +63,7 @@ Data synthesis command ([Docs](https://github.com/Nicholasli1995/EvoSkeleton/blo
 ```bash
 python evolve.py -generate True -WS True -SS "S1"
 ```
-
+MPJPE (P1) for each action under weakly-supervised setting is shown in the table below.
 | Protocol \#1                                           | Dir.             | Disc             | Eat           | Greet            | Phone         | Photo            | Pose | Purch.        | Sit              | SitD. | Smoke         | Wait          | WalkD.        | Walk          | WalkT.        | Avg.          |
 |--------------------------------------------------------|------------------|------------------|---------------|------------------|---------------|------------------|------|---------------|------------------|-------|---------------|---------------|---------------|---------------|---------------|---------------|
 | Kocabas (CVPR'19)  | -                | -                | -             | -                | -             | -                | -    | -             | -                | -     | -             | -             | -             | -             | -             | 65.3          |
