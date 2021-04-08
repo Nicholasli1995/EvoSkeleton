@@ -39,7 +39,7 @@ After data augmentation using the evolved data, we noticed the model generalizat
 | Kocabas et al. (CVPR' 19) | 65.3            |  57.2            |
 | Pavllo et al. (CVPR' 19)  | 64.7            |  -               |
 | Li et al. (ICCV' 19)      | 88.8            |  66.5            |
-| Ours                      | **62.9**        |  **47.5**        |
+| Ours                      | **60.8**        |  **46.2**        |
 
 ## Fully-Supervised Experiments on Human 3.6M Dataset
 To train on real detections obtained by the high-resolution heatmap regression model, run
