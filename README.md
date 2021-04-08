@@ -38,10 +38,18 @@ Performance on H36M ([Link to pre-trained models](https://github.com/Nicholasli1
 </p>
 
 ## 2D Human Pose Estimation on H3.6M
-[This page](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/2DHPE.md) shows how to perform 2D human pose estimation on Human 3.6M dataset with the pre-trained high-resolution heatmap regression model.
+
+[This page](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/2DHPE.md) shows how to perform 2D human pose estimation on Human 3.6M dataset with the pre-trained high-resolution heatmap regression model. The highly accurate 2D joint predictions may benefit your 3D human pose estimation project.
 <p align="center">
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/h36m2dpose2.png" width="789" height="208"/>
 </p>
+
+| Method                    | Parameters| FLOPs|Average Joint Localization Error (pixels) |
+| ------------------------- | ---------------| --------------| --------------| 
+| CPN (CVPR' 18)            | -|-| 5.4           |
+| Ours (HRN + U + S)           |63.6M| 32.9G           | **4.4**        |
+
+
 
 ## Dataset: Unconstrained 3D Pose in the Wild
 [This sub-page](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/DATASET.md) describs the newly collected dataset Unconstrained 3D Human Pose in the Wild (U3DPW) and gives instructions on how to download it.
