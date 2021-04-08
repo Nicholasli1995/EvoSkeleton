@@ -1,8 +1,22 @@
-This page is under editting.
+This page presents model performance on H36M under various settings. Pre-trained models and instructions for reproduction can also be found.
 
-By clicking the method name, you can download the pre-trained models and obtain the bash commands to reproduce the results (coming soon).
-## Fully-supervised Setting
+## Fully-supervised Setting (S15678)
 MPJPE (P1) for each action under fully-supervised setting is shown in the table below.
+
+[Download our pre-trained model]()
+
+Inference command:
+```bash
+python 2Dto3Dnet.py -evaluate True -twoD_source "HRN" -ckpt_dir "YourMODELPath"
+```
+Training command ([Docs](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/TRAINING.md)):
+```bash
+python 2Dto3Dnet.py -train True -num_stages 3 -num_blocks 3 -twoD_source "HRN" -evolved_path "YourDataPath"
+```
+Data synthesis command ([Docs](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/HHR.md)):
+```bash
+python evolve.py -SS "S15678" -T 1.5 -SD "YourDataPath" -generate True
+```
 
 | Protocol \#1                                      | Dir.             | Disc             | Eat           | Greet            | Phone         | Photo         | Pose | Purch.        | Sit              | SitD.            | Smoke         | Wait          | WalkD.        | Walk          | WalkT.        | Avg.          |
 |-------------------------------------------------------------|------------------|------------------|---------------|------------------|---------------|---------------|------|---------------|------------------|------------------|---------------|---------------|---------------|---------------|---------------|---------------|
@@ -30,8 +44,23 @@ MPJPE (P2) for each action under fully-supervised setting is shown in the table 
 | Liu (ECCV'20)    | 35.9             | 40.0             | 38.0          | 41.5             | 42.5          | 51.4          | 37.8 | 36.0          | 48.6             | 56.6             | 41.8          | 38.3          | 42.7          | 31.7          | 36.2          | 41.2          |
 | Ours (S15678)                                        |34.2|34.6|37.3|39.3|38.5|45.6|34.5|32.7|40.5|51.3|37.7|35.4|39.9|29.9|34.5| 37.7 |
 
-## Weakly-supervised Setting
+## Weakly-supervised Setting (S1)
 MPJPE (P1) for each action under weakly-supervised setting is shown in the table below.
+
+[Download our pre-trained model]()
+
+Inference command:
+```bash
+python 2Dto3Dnet.py -evaluate True -twoD_source "HRN" -ckpt_dir "YourMODELPath" 
+```
+Training command ([Docs](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/TRAINING.md)):
+```bash
+python 2Dto3Dnet.py -train True -num_stages 2 -ws True -ws_name "S1" -twoD_source "HRN" -evolved_path "YourDataPath"
+```
+Data synthesis command ([Docs](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/HHR.md)):
+```bash
+python evolve.py -generate True -WS True -SS "S1"
+```
 
 | Protocol \#1                                           | Dir.             | Disc             | Eat           | Greet            | Phone         | Photo            | Pose | Purch.        | Sit              | SitD. | Smoke         | Wait          | WalkD.        | Walk          | WalkT.        | Avg.          |
 |--------------------------------------------------------|------------------|------------------|---------------|------------------|---------------|------------------|------|---------------|------------------|-------|---------------|---------------|---------------|---------------|---------------|---------------|
