@@ -7,6 +7,7 @@ This is the project website containing relevant files for the CVPR 2020 paper "C
 News:
 
 (2021-04-08): Release v-1.0. The support for pre-trained models is strengthened. More details have been added to the supplementary material.
+
 (2021-04-05): A new release is planned on or before 2021-04-12. More pre-trained models will be added. MPJPE for each specific action will be added in the arxiv paper for reference.
 
 
