@@ -12,7 +12,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 import libs.dataset.h36m.cameras as cameras
 import libs.dataset.h36m.pth_dataset as dataset
-
+import libs.utils.utils as utils
 # Human3.6m IDs for training and testing
 TRAIN_SUBJECTS = [1, 5, 6, 7, 8]
 TEST_SUBJECTS  = [9, 11]
@@ -217,6 +217,8 @@ def get_train_dict_3d(opt):
     Returns
       train_dict_3d: a dictionary containing training 3d poses
     """
+    if not opt.train:
+        return None
     dict_path = os.path.join(opt.data_dir, 'threeDPose_train.npy')
     #=========================================================================#
     # For real 2D detections, the down-sampling and data augmentation 
@@ -281,14 +283,20 @@ def get_dict_2d(train_dict_3d, test_dict_3d, rcams, ncams, opt):
         # In fact, these 2D key-points are used as ground-truth to train the 
         # first stage of TAG-net.
         if opt.virtual_cams:
-            ncams *= 2            
-        train_dict_2d = project_to_cameras(train_dict_3d, rcams, ncams=ncams)
+            ncams *= 2       
+        if opt.train:
+            train_dict_2d = project_to_cameras(train_dict_3d, rcams, ncams=ncams)
+        else:
+            train_dict_2d = None
         test_dict_2d  = project_to_cameras(test_dict_3d, rcams, ncams=ncams)
     elif opt.twoD_source == 'HRN':
         # The 2D key-point detections obtained by the heatmap regression model.
         # The model uses high-resolution net as backbone and pixel-shuffle super-resolution
         # to regress high-resolution heatmaps.
-        train_dict_2d = np.load(os.path.join(opt.data_dir, 'twoDPose_HRN_train.npy'), allow_pickle=True).item()           
+        if opt.train:
+            train_dict_2d = np.load(os.path.join(opt.data_dir, 'twoDPose_HRN_train.npy'), allow_pickle=True).item()           
+        else:
+            train_dict_2d = None
         test_dict_2d = np.load(os.path.join(opt.data_dir, 'twoDPose_HRN_test.npy'), allow_pickle=True).item()
         
         def delete(dic, actions):
@@ -325,7 +333,8 @@ def get_dict_2d(train_dict_3d, test_dict_3d, rcams, ncams, opt):
         if opt.ws and opt.ws_name in ['S1', 'S15', 'S156']:
             sub_list = [int(opt.ws_name[i]) for i in range(1, len(opt.ws_name))]
             remove_keys(train_dict_3d, sub_list)
-            remove_keys(train_dict_2d, sub_list)
+            if train_dict_2d is not None:
+                remove_keys(train_dict_2d, sub_list)
         # data augmentation with evolved data
         if opt.evolved_path is not None:
             evolved_dict_3d = np.load(opt.evolved_path, allow_pickle=True).item()
@@ -364,57 +373,76 @@ def prepare_data_dict(rcams,
                                                              test_dict_3d, 
                                                              rcams, 
                                                              ncams,
-                                                             opt)
+                                                             opt
+                                                             )
     # compute normalization statistics and normalize the 2D data
-    complete_train_2d = copy.deepcopy(np.vstack(list(train_dict_2d.values())))
-    data_mean_2d, data_std_2d, dim_to_ignore_2d, dim_to_use_2d = \
-    normalization_stats(complete_train_2d, 
-                        dim=2, 
-                        norm_twoD=opt.norm_twoD, 
-                        use_nose=use_nose)
-    data_dic['train_set_2d'] = normalize_data(train_dict_2d,
-                                              data_mean_2d,
-                                              data_std_2d, 
-                                              dim_to_use_2d, 
-                                              norm_single = opt.norm_single)
+    if opt.train:
+        complete_train_2d = copy.deepcopy(np.vstack(list(train_dict_2d.values())))
+        data_mean_2d, data_std_2d, dim_to_ignore_2d, dim_to_use_2d = \
+        normalization_stats(complete_train_2d, 
+                            dim=2, 
+                            norm_twoD=opt.norm_twoD, 
+                            use_nose=use_nose
+                            )
+        
+        data_dic['train_set_2d'] = normalize_data(train_dict_2d,
+                                                  data_mean_2d,
+                                                  data_std_2d, 
+                                                  dim_to_use_2d, 
+                                                  norm_single=opt.norm_single
+                                                  )
+    else:
+        _, data_stats = utils.load_ckpt(opt)
+        data_mean_2d, data_std_2d = data_stats['mean_2d'], data_stats['std_2d']
+        dim_to_use_2d = data_stats['dim_use_2d']
     data_dic['test_set_2d']  = normalize_data(test_dict_2d,
                                               data_mean_2d,
                                               data_std_2d, 
                                               dim_to_use_2d, 
-                                              norm_single = opt.norm_single)
+                                              norm_single=opt.norm_single
+                                              )
     # The 3D joint position is represented in the world coordinate,
     # which is converted to camera coordinate system as the regression target
-    train_dict_3d = transform_world_to_camera(train_dict_3d, rcams, ncams=ncams)
+    if opt.train:
+        train_dict_3d = transform_world_to_camera(train_dict_3d, rcams, ncams=ncams)
+        # apply 3d post-processing (centering around root)
+        train_dict_3d, train_root_positions = postprocess_3d(train_dict_3d)
     test_dict_3d  = transform_world_to_camera(test_dict_3d, rcams, ncams=ncams)
-    # apply 3d post-processing (centering around root)
-    train_dict_3d, train_root_positions = postprocess_3d(train_dict_3d)
     test_dict_3d,  test_root_positions  = postprocess_3d(test_dict_3d)
-    # compute normalization statistics and normalize the 3D data
-    complete_train_3d = copy.deepcopy(np.vstack(list(train_dict_3d.values())))
-    data_mean_3d, data_std_3d, dim_to_ignore_3d, dim_to_use_3d =\
-    normalization_stats(complete_train_3d, dim=3, predict_14=predict_14)
-    data_dic['train_set_3d'] = normalize_data(train_dict_3d,
-                                              data_mean_3d,
-                                              data_std_3d, 
-                                              dim_to_use_3d)
+    if opt.train:
+        # compute normalization statistics and normalize the 3D data
+        complete_train_3d = copy.deepcopy(np.vstack(list(train_dict_3d.values())))
+        data_mean_3d, data_std_3d, dim_to_ignore_3d, dim_to_use_3d =\
+        normalization_stats(complete_train_3d, dim=3, predict_14=predict_14)
+        data_dic['train_set_3d'] = normalize_data(train_dict_3d,
+                                                  data_mean_3d,
+                                                  data_std_3d, 
+                                                  dim_to_use_3d
+                                                  )
+        # some joints are not used during training
+        dim_use_2d = list_remove([i for i in range(len(data_mean_2d))], 
+                                  list(dim_to_ignore_2d))
+        dim_use_3d = list_remove([i for i in range(len(data_mean_3d))], 
+                                  list(dim_to_ignore_3d))
+        # assemble a dictionary for data statistics
+        data_stats = {'mean_2d':data_mean_2d, 
+                      'std_2d':data_std_2d,
+                      'mean_3d':data_mean_3d, 
+                      'std_3d':data_std_3d,
+                      'dim_ignore_2d':dim_to_ignore_2d, 
+                      'dim_ignore_3d':dim_to_ignore_3d,
+                      'dim_use_2d':dim_use_2d,
+                      'dim_use_3d':dim_use_3d
+                      }         
+    else:
+        data_mean_3d, data_std_3d = data_stats['mean_3d'], data_stats['std_3d']
+        dim_to_use_3d = data_stats['dim_use_3d']            
     data_dic['test_set_3d']  = normalize_data(test_dict_3d,  
                                               data_mean_3d,
                                               data_std_3d, 
-                                              dim_to_use_3d)    
-    # some joints are not used during training
-    dim_use_2d = list_remove([i for i in range(len(data_mean_2d))], 
-                              list(dim_to_ignore_2d))
-    dim_use_3d = list_remove([i for i in range(len(data_mean_3d))], 
-                              list(dim_to_ignore_3d))
-    # assemble a dictionary for data statistics
-    data_stats = {'mean_2d':data_mean_2d, 
-                  'std_2d':data_std_2d,
-                  'mean_3d':data_mean_3d, 
-                  'std_3d':data_std_3d,
-                  'dim_ignore_2d':dim_to_ignore_2d, 
-                  'dim_ignore_3d':dim_to_ignore_3d,
-                  'dim_use_2d':dim_use_2d,
-                  'dim_use_3d':dim_use_3d}    
+                                              dim_to_use_3d
+                                              )    
+   
     return data_dic, data_stats
 
 def select_action(dic_2d, dic_3d, action, twoD_source):
@@ -781,32 +809,41 @@ def prepare_dataset(opt):
     # first prepare Python dictionary containing 2D and 3D data
     data_dic, data_stats = prepare_data_dict(rcams, 
                                              opt,
-                                             predict_14=False)
+                                             predict_14=False
+                                             )
     input_size = len(data_stats['dim_use_2d'])
     output_size = len(data_stats['dim_use_3d'])
-    # convert Python dictionary to numpy array
-    train_input, train_output = get_all_data(data_dic['train_set_2d'],
-                                             data_dic['train_set_3d'], 
-                                             camera_frame,
-                                             norm_twoD=opt.norm_twoD,
-                                             input_size=input_size,
-                                             output_size=output_size)
-    
+    if opt.train:
+        # convert Python dictionary to numpy array
+        train_input, train_output = get_all_data(data_dic['train_set_2d'],
+                                                 data_dic['train_set_3d'], 
+                                                 camera_frame,
+                                                 norm_twoD=opt.norm_twoD,
+                                                 input_size=input_size,
+                                                 output_size=output_size
+                                                 )
+        # The Numpy arrays are finally used to initialize the dataset objects
+        train_dataset = dataset.PoseDataset(train_input, 
+                                            train_output, 
+                                            'train',
+                                            refine_3d = opt.refine_3d
+                                            )
+    else:
+        train_dataset = None
+            
     eval_input, eval_output = get_all_data(data_dic['test_set_2d'],
                                            data_dic['test_set_3d'], 
                                            camera_frame,
                                            norm_twoD=opt.norm_twoD,
                                            input_size=input_size,
-                                           output_size=output_size)
-    # The Numpy arrays are finally used to initialize the dataset objects
-    train_dataset = dataset.PoseDataset(train_input, 
-                                        train_output, 
-                                        'train',
-                                        refine_3d = opt.refine_3d)
+                                           output_size=output_size
+                                           )
+
     eval_dataset = dataset.PoseDataset(eval_input, 
                                        eval_output, 
                                        'eval',
-                                       refine_3d = opt.refine_3d)
+                                       refine_3d = opt.refine_3d
+                                       )
     # Create a list of dataset objects for action-wise evaluation
     action_eval_list = split_action(data_dic['test_set_2d'],
                                     data_dic['test_set_3d'],
@@ -814,6 +851,7 @@ def prepare_dataset(opt):
                                     camera_frame,
                                     opt,
                                     input_size=input_size,
-                                    output_size=output_size)
+                                    output_size=output_size
+                                    )
     
     return train_dataset, eval_dataset, data_stats, action_eval_list

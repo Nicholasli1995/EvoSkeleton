@@ -78,7 +78,8 @@ def evaluate_cascade(cascade,
                      save_path=None,
                      action_wise=False, 
                      action_eval_list=None, 
-                     apply_dropout=False):
+                     apply_dropout=False
+                     ):
     """
     Evaluate a cascaded model given a dataset object.
     """
@@ -104,7 +105,8 @@ def evaluate_cascade(cascade,
                                       save_path=save_path,
                                       procrustes=False, 
                                       per_joint=True, 
-                                      apply_dropout=apply_dropout)
+                                      apply_dropout=apply_dropout
+                                      )
 
             # update datasets
             eval_dataset.stage_update(stage_model, stats, opt)        

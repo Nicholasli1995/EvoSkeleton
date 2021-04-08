@@ -41,7 +41,7 @@ def save_ckpt(opt, record, stats):
 
 def load_ckpt(opt):
     cascade = torch.load(os.path.join(opt.ckpt_dir, 'model.th'))
-    stats = np.load(os.path.join(opt.ckpt_dir, 'stats.npy')).item()
+    stats = np.load(os.path.join(opt.ckpt_dir, 'stats.npy'), allow_pickle=True).item()
     if opt.cuda:
         cascade.cuda()
     return cascade, stats

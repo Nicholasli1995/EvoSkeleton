@@ -107,8 +107,6 @@ def parse_arg():
     parser.add_argument('-save', type=bool, default=True)    
     # evaluate for each action
     parser.add_argument('-evaluate_action', type=bool, default=True)
-    # the path to the model used for evaluation
-    parser.add_argument('-eval_path', type=str, default=None)    
     parser.add_argument('-produce', type=bool, default=False)
     opt = parser.parse_args()
     return opt

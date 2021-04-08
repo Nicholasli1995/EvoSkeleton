@@ -10,9 +10,7 @@ is_valid_local, is_valid
 import matplotlib.pyplot as plt
 import os
 import logging
-logging.basicConfig(level=logging.INFO,
-                    format="[%(asctime)s]: %(message)s"
-                    )
+
 import numpy as np
 import torch
 from mpl_toolkits.mplot3d import Axes3D
@@ -679,7 +677,11 @@ def evolution(initial_population, opt, model_file=None):
     """
     Dataset evolution.
     """
+    logging.basicConfig(level=logging.INFO,
+                        format="[%(asctime)s]: %(message)s"
+                        )
     population = initial_population
+    save_results(initial_population, opt, 0)
     initial_num = len(initial_population)
     for gen_idx in range(1, opt.G+1):
         population = one_iteration(population, opt, model_file=model_file)
