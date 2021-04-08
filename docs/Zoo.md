@@ -4,6 +4,7 @@ This page presents model performance on H36M under various settings. Pre-trained
 MPJPE (P1) for each action under fully-supervised setting is shown in the table below.
 
 [Download our pre-trained model](https://drive.google.com/drive/folders/1IRKUWrnheD03Dj30LLGlh_LLT1CK6dr5?usp=sharing)
+
 [Download our pre-evolved data](https://drive.google.com/drive/folders/1FKFkmTJQcEdrCvZOSc8cF5OTTjFvyLav?usp=sharing)
 
 Inference command:
@@ -49,7 +50,9 @@ MPJPE (P2) for each action under fully-supervised setting is shown in the table 
 MPJPE (P1) for each action under weakly-supervised setting is shown in the table below.
 
 [Download our pre-trained model](https://drive.google.com/drive/folders/1PZoiizPKeoFTsvnFKIxaRDNbyb0Csx50?usp=sharing)
+
 [Download our pre-evolved data](https://drive.google.com/drive/folders/1nTW2CCCT_sbJ1CejhuiQLTgDDU5sJjZj?usp=sharing)
+
 Inference command:
 ```bash
 python 2Dto3Dnet.py -evaluate True -twoD_source "HRN" -ckpt_dir "YourMODELPath" 
