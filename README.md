@@ -1,3 +1,5 @@
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/cascaded-deep-monocular-3d-human-pose-1/3d-human-pose-estimation-on-human36m)](https://paperswithcode.com/sota/3d-human-pose-estimation-on-human36m?p=cascaded-deep-monocular-3d-human-pose-1)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/cascaded-deep-monocular-3d-human-pose-1/monocular-3d-human-pose-estimation-on-human3)](https://paperswithcode.com/sota/monocular-3d-human-pose-estimation-on-human3?p=cascaded-deep-monocular-3d-human-pose-1)
 # EvoSkeleton
 This is the project website containing relevant files for the CVPR 2020 paper "Cascaded Deep Monocular 3D Human Pose Estimation with Evolutionary Training Data". The usage and instructions are organized into several parts serving distinct purposes. Please visit the corresponding sub-page for details. 
 
