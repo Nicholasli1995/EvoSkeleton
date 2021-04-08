@@ -34,7 +34,7 @@ Performance on H36M ([Link to pre-trained models](https://github.com/Nicholasli1
 ## Hierarchical Human Representation and Data Synthesis
 [This sub-page](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/HHR.md) gives instructions on how to use the 3D skeleton model and how the evolution algorithm can be used to discover novel data.
 <p align="center">
-  <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/hierarchical.jpg"  width="492" height="304" />
+  <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/hierarchical.jpg"  width="394" height="243" />
 </p>
 
 ## 2D Human Pose Estimation on H3.6M
