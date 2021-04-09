@@ -7,10 +7,6 @@ This is the project website containing relevant files for the CVPR 2020 paper "C
 News:
 
 (2021-04-08): Release v-1.0. The support for pre-trained models is strengthened. More details have been added to the supplementary material.
-
-(2021-04-05): A new release is planned on or before 2021-04-12. More pre-trained models will be added. MPJPE for each specific action will be added in the arxiv paper for reference.
-
-
   
 ## Cascaded 2D-to-3D Lifting
 [This sub-page](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/TRAINING.md) details how to train a cascaded model to lift 2D key-points to 3D skeletons on H36M.
