@@ -22,13 +22,13 @@ re_order_indices= [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16]
 # paths
 data_dic_path = './example_annot.npy'     
 model_path = './example_model.th'
-stats = np.load('./stats.npy').item()
+stats = np.load('./stats.npy', allow_pickle=True).item()
 dim_used_2d = stats['dim_use_2d']
 mean_2d = stats['mean_2d']
 std_2d = stats['std_2d'] 
 # load the checkpoint and statistics
 ckpt = torch.load(model_path)
-data_dic = np.load(data_dic_path).item()
+data_dic = np.load(data_dic_path, allow_pickle=True).item()
 # initialize the model
 cascade = libm.get_cascade()
 input_size = 32

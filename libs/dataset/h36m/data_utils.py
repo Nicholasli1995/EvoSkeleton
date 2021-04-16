@@ -8,11 +8,11 @@ import numpy as np
 import copy
 import logging
 import matplotlib.pyplot as plt
+import torch
 from mpl_toolkits.mplot3d import Axes3D
 
 import libs.dataset.h36m.cameras as cameras
 import libs.dataset.h36m.pth_dataset as dataset
-import libs.utils.utils as utils
 # Human3.6m IDs for training and testing
 TRAIN_SUBJECTS = [1, 5, 6, 7, 8]
 TEST_SUBJECTS  = [9, 11]
@@ -68,6 +68,13 @@ SH_NAMES[15] = 'LWrist'
 # used in previous works. Here we just use '.sh' to represent key-points obtained
 # from any heat-map regression model. We used high-resolution net instead of 
 # stacked-hourglass model.  
+
+def load_ckpt(opt):
+    cascade = torch.load(os.path.join(opt.ckpt_dir, 'model.th'))
+    stats = np.load(os.path.join(opt.ckpt_dir, 'stats.npy'), allow_pickle=True).item()
+    if opt.cuda:
+        cascade.cuda()
+    return cascade, stats
 
 def list_remove(list_a, list_b):
     """
@@ -392,7 +399,7 @@ def prepare_data_dict(rcams,
                                                   norm_single=opt.norm_single
                                                   )
     else:
-        _, data_stats = utils.load_ckpt(opt)
+        _, data_stats = load_ckpt(opt)
         data_mean_2d, data_std_2d = data_stats['mean_2d'], data_stats['std_2d']
         dim_to_use_2d = data_stats['dim_use_2d']
     data_dic['test_set_2d']  = normalize_data(test_dict_2d,
