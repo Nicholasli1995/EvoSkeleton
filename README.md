@@ -11,7 +11,7 @@ News:
 ## Cascaded 2D-to-3D Lifting
 [This sub-page](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/TRAINING.md) details how to train a cascaded model to lift 2D key-points to 3D skeletons on H36M.
 
-If you do not want to prepare synthetic data and train the model by yourself, you can access an examplar pre-trained model [here](https://drive.google.com/file/d/158oCTK-9Y8Bl9qxidoHcXfqfeeA7qT93/view?usp=sharing) and follow the instructions in the [document](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/TRAINING.md). This model can be used for in-the-wild inference as well as reproducing the results on MPI-INF-3DHP.
+If you do not want to prepare synthetic data and train the model by yourself, you can access an examplar pre-trained model [here](https://drive.google.com/file/d/158oCTK-9Y8Bl9qxidoHcXfqfeeA7qT93/view?usp=sharing) and follow the instructions in the [document](https://github.com/Nicholasli1995/EvoSkeleton/blob/master/docs/TRAINING.md). This model can be used for in-the-wild inference as well as reproducing the results on MPI-INF-3DHP. The evaluation metric for MPI-INF-3DHP can be accessed [here](https://github.com/chenxuluo/OriNet-demo/tree/master/src/test_util).
 <p align="center">
   <img src="https://github.com/Nicholasli1995/EvoSkeleton/blob/master/imgs/architecture.jpg"/>
 </p>
