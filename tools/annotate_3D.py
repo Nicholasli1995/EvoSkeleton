@@ -3,15 +3,17 @@ Interactive annotation tool for 3D human pose estimation.
 Given an image and a coarse 3D skeleton estimation, the user can interactively
 modify the 3D parameters and save them as the ground truth.
 """
-from mpl_toolkits.mplot3d import Axes3D
-from scipy.spatial.transform import Rotation as R
-from cv2 import projectPoints
+
 import matplotlib.pyplot as plt
 import numpy as np
 import argparse
 import imageio
 import sys
 import os
+
+from mpl_toolkits.mplot3d import Axes3D
+from scipy.spatial.transform import Rotation as R
+from cv2 import projectPoints
 
 sys.path.append("../")
 
@@ -116,7 +118,10 @@ def press(event):
 
     if angle_idx in [None, 1, 3, 5, 7]:
         notes += ' direction: ' + direction_name[direction]
+    if event.key not in ['up', 'down', 'right', 'left']:
+        print(notes)
     plot_ax.set_xlabel(notes)
+    fig.canvas.draw_idle()
         
 def show3Dpose(channels, 
                ax, 
@@ -255,9 +260,9 @@ def update_line(line_idx, parent_idx, child_idx):
     # update 3D lines
     parent, child = skeleton[parent_idx], skeleton[child_idx]
 
-    x = [parent[0], child[0]]
-    y = [parent[1], child[1]]
-    z = [parent[2], child[2]]
+    x = np.array([parent[0], child[0]])
+    y = np.array([parent[1], child[1]])
+    z = np.array([parent[2], child[2]])
 
     lines[line_idx][0].set_data(x, y)
     lines[line_idx][0].set_3d_properties(z)
@@ -286,7 +291,7 @@ def rotate_global(rot):
     global skeleton
     hip = skeleton[0].reshape(1,3)
     temp_skeleton = skeleton - hip
-    skeleton = (rot.as_dcm() @ temp_skeleton.T).T + hip
+    skeleton = (rot.as_matrix() @ temp_skeleton.T).T + hip
 
     for line_idx in range(len(parent_indices)):
         update_line(line_idx, 
@@ -329,7 +334,7 @@ def update_skeleton(angle_idx, key_name):
 
         # Local rotation vector for child/lower limb
         temp = local_systems[local_system_map[angle_idx + 1]]
-        local_systems[local_system_map[angle_idx + 1]] = rot2.as_dcm() @ temp
+        local_systems[local_system_map[angle_idx + 1]] = rot2.as_matrix() @ temp
 
         # update parent and child bone
         update_global(angle_idx)
@@ -377,13 +382,15 @@ def visualize(pose, skeleton, img):
     """
     global lines, points, fig, plot_ax, img_ax, intrinsic_mat
     fig = plt.figure() 
-    # 3D Pose Plot
+    fig.canvas.mpl_disconnect(fig.canvas.manager.key_press_handler_id)
+    
+    # 3D pose plot
     plot_ax = plt.subplot(121, projection='3d')
 
     lines = show3Dpose(pose, plot_ax)
     fig.canvas.mpl_connect('key_press_event', press)
     plot_ax.set_title('1-9: limb selection, 0: global rotation, arrow keys: rotation')
-    # Image Plot
+    # Image plot
     img_ax = plt.subplot(122)
     img_ax.imshow(img)
     intrinsic_mat = np.array([[f[0], 0.00e+00, float(img.shape[1])/2],
