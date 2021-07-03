@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np 
 import argparse
 import os
+import time
 
 from glob import glob
 
@@ -34,6 +35,8 @@ names = ['ra',      # 0 right ankle
          'th',      # 15 thorax
          'ns']      # 16 nose
 
+MAX_CLICK_LENGTH = 0.3 # in seconds; anything longer is a pan/zoom motion
+
 joints = np.array([]).reshape(0, 2)
 fig = None
 ax = None
@@ -46,6 +49,7 @@ annotation_path = None
 # whether the image has veen updated or not
 updated = False
 n = len(names)
+time_onclick = None
 
 def initialization(opt):
     global img_path_list, img_idx, annotation,annotation_path, updated
@@ -61,9 +65,10 @@ def initialization(opt):
     return
 
 def plot_image(img_path):
-    global plots, updated
+    global plots, updated, joints
     ax.clear()
     img = imageio.imread(img_path)
+    joints = np.array([]).reshape(0, 2)
     ax.imshow(img)
     plots = ax.plot([], [], 'ro')
     plt.show()    
@@ -71,10 +76,14 @@ def plot_image(img_path):
     updated = True
     return
 
-def onpick(event):
-    global joints, fig, plots, updated
+def onclick(event):
+    global time_onclick
+    time_onclick = time.time()
     
-    if event.button == 1:
+def onrelease(event):
+    global joints, fig, plots, updated, time_onclick
+    
+    if event.button == 1 and ((time.time() - time_onclick) < MAX_CLICK_LENGTH):
         if len(joints) < n and updated:
             ind = len(joints)
             joint = np.array([event.xdata, event.ydata])
@@ -100,10 +109,11 @@ def onkey(event):
 
     if event.key == 'c': 
         # remove the annotation on the image
-        joints = np.array([]).reshape(0, 2)
-        plots[0].remove()
-        plots = plt.plot([], [], 'ro')
-        fig.canvas.draw()
+        if len(joints) > 0:
+            joints = np.array([]).reshape(0, 2)
+            plots[0].remove()
+            plots = plt.plot([], [], 'ro')
+            fig.canvas.draw()
         
     if event.key == 'n':
         # go to next image
@@ -137,7 +147,8 @@ def main(opt):
     fig = plt.gcf() 
     ax = plt.gca() 
     plot_image(img_path_list[img_idx])
-    fig.canvas.mpl_connect('button_press_event', onpick)
+    fig.canvas.mpl_connect('button_press_event', onclick)
+    fig.canvas.mpl_connect('button_release_event', onrelease)
     cid = fig.canvas.mpl_connect('key_press_event', onkey)
     return
 
