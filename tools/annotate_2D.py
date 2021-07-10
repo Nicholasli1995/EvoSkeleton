@@ -70,10 +70,9 @@ def plot_image(img_path):
     img = imageio.imread(img_path)
     joints = np.array([]).reshape(0, 2)
     ax.imshow(img)
-    plots = ax.plot([], [], 'ro')
-    plt.show()    
+    plots = ax.plot([], [], 'ro') 
     fig.canvas.draw()
-    updated = True
+    updated = True  
     return
 
 def onclick(event):
@@ -150,6 +149,7 @@ def main(opt):
     fig.canvas.mpl_connect('button_press_event', onclick)
     fig.canvas.mpl_connect('button_release_event', onrelease)
     cid = fig.canvas.mpl_connect('key_press_event', onkey)
+    plt.show() 
     return
 
 if __name__ == '__main__':

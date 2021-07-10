@@ -466,6 +466,6 @@ def main(opt):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='3D Interactive Tool')
-    parser.add_argument('-dataset_dir', type=str)
+    parser.add_argument('-d', '--dataset_dir', default=None, type=str)
     opt = parser.parse_args()
     main(opt)
